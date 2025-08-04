@@ -1,0 +1,4 @@
+# .github/CODEOWNERS
+
+# Give dczii ownership of every file in the repo
+*    @dczii
