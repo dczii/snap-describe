@@ -1,0 +1,16 @@
+{
+  "name": "protect-main",
+  "target": "branch",
+  "conditions": {
+    "branches": {
+      "patterns": ["main"]
+    }
+  },
+  "enforcement": {
+    "enforces_admins": true
+  },
+  "restrictions": {
+    "teams": ["ORG-ADMINS"],
+    "users": []
+  }
+}
