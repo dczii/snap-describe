@@ -5,9 +5,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "dotenvx run -- node server.ts",
+<<<<<<< HEAD
     "dev": "dotenvx run -- nodemon server.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\""
+=======
+    "dev": "dotenvx run -- nodemon server.ts"
+>>>>>>> 31aa0ca (initial server setup  with express, graphql, apollo-server, and prisma.)
   },
   "author": "",
   "license": "ISC",
