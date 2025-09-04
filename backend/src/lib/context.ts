@@ -1,6 +1,7 @@
 import { prisma } from "./prismaConn";
 import { Request, Response } from "express";
 import { verifyAccessToken } from "../services/jwtUtils";
+import logger from "../logger";
 
 export async function createContext({req, res}: {req: Request, res: Response}){
     const authHeader = req.headers.authorization;
@@ -20,7 +21,7 @@ export async function createContext({req, res}: {req: Request, res: Response}){
         }
     } catch (error: unknown) {
         if(error instanceof Error && error.name === "TokenExpiredError") {
-            console.error("Access token expired:", error.message);
+            logger.error("Access token expired:", error.message);
             return {
                 res,
                 prisma,
