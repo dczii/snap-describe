@@ -1,3 +1,4 @@
+import Colors, { Theme } from "@/constants/theme";
 import { router } from "expo-router";
 import {
   Text,
@@ -20,7 +21,7 @@ export default function Register() {
           <TextInput
             style={styles.input}
             placeholder="Juan Dela Cruz"
-            placeholderTextColor="#888"
+            placeholderTextColor={Colors.placeholder}
           />
         </View>
 
@@ -29,7 +30,7 @@ export default function Register() {
           <TextInput
             style={styles.input}
             placeholder="juandelacruz@gmail.com"
-            placeholderTextColor="#888"
+            placeholderTextColor={Colors.placeholder}
           />
         </View>
 
@@ -38,7 +39,7 @@ export default function Register() {
           <TextInput
             style={styles.input}
             placeholder="0917-218-6677"
-            placeholderTextColor="#888"
+            placeholderTextColor={Colors.placeholder}
           />
         </View>
 
@@ -48,7 +49,7 @@ export default function Register() {
             <TextInput
               style={styles.input}
               placeholder="Enter Password"
-              placeholderTextColor="#888"
+              placeholderTextColor={Colors.placeholder}
               secureTextEntry
             />
           </View>
@@ -58,7 +59,7 @@ export default function Register() {
             <TextInput
               style={styles.input}
               placeholder="Re-enter Password"
-              placeholderTextColor="#888"
+              placeholderTextColor={Colors.placeholder}
               secureTextEntry
             />
           </View>
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 24,
     width: "100%",
     height: "auto",
-    backgroundColor: "#1A2D42",
+    backgroundColor: Theme.primary,
     borderRadius: 12,
     gap: 20,
 
@@ -103,18 +104,17 @@ const styles = StyleSheet.create({
   backIcon: {
     width: 24,
     height: 24,
-    tintColor: "#000",
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
-    color: "#fff",
+    color: "white",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     padding: 12,
     fontSize: 16,
     width: "100%",
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   button: {
-    backgroundColor: "#1A2D42",
+    backgroundColor: Theme.primary,
     borderRadius: 50,
     color: "white",
     padding: 12,
