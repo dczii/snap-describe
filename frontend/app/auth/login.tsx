@@ -7,6 +7,7 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Theme } from "@/constants/theme";
 
 export default function Login() {
   const router = useRouter();
@@ -19,12 +20,12 @@ export default function Login() {
         <TextInput
           style={styles.input}
           placeholder="Email or Phone"
-          placeholderTextColor="#000"
+          placeholderTextColor={Theme.text}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
-          placeholderTextColor="#000"
+          placeholderTextColor={Theme.text}
           secureTextEntry
         />
 
