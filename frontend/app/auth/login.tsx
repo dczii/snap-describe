@@ -7,7 +7,7 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Theme } from "@/constants/theme";
+import Colors, { Theme } from "@/constants/theme";
 
 export default function Login() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function Login() {
         </TouchableOpacity>
 
         <View>
-          <Text style={{ marginTop: 16, color: "#1A2D42" }}>or</Text>
+          <Text style={{ marginTop: 16, color: Theme.text }}>or</Text>
         </View>
 
         <View style={styles.gmailContainer}>
@@ -50,9 +50,9 @@ export default function Login() {
         </View>
 
         <TouchableOpacity onPress={() => router.push("/auth/register")}>
-          <Text style={{ marginTop: 16, color: "#1A2D42" }}>
+          <Text style={{ marginTop: 16, color: Theme.text }}>
             Don’t have an account?{" "}
-            <Text style={{ color: "#0069AA", fontStyle: "italic" }}>
+            <Text style={{ color: Colors.link, fontStyle: "italic" }}>
               Sign Up
             </Text>
           </Text>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1A2D42",
+    backgroundColor: Theme.primary,
   },
   container: {
     padding: 12,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 12,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: Theme.primary,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: Theme.primary,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 24,
-    color: "#1A2D42",
+    color: Colors.text,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#1A2D42",
+    borderColor: Theme.primary,
     backgroundColor: "white",
     width: "100%",
     borderRadius: 50,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    backgroundColor: "#1A2D42",
+    backgroundColor: Theme.primary,
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 12,
