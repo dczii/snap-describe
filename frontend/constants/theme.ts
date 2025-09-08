@@ -3,7 +3,9 @@ const Colors = {
   secondary: "#2E4156",
   background: "#AAB7B7",
   text: "#1A2D42",
+  link: "#0069AA",
   error: "#D81900",
+  placeholder: "rgba(26, 45, 66, 0.6)",
 };
 
 export const Theme = {
