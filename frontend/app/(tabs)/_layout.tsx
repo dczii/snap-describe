@@ -1,60 +1,66 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, Image } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Ionicons } from "@expo/vector-icons";
+import TabIcon from "@/components/cards/TabIcon";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  const tabConfig = {
+    index: {
+      title: "Home",
+      icon: require("../../assets/images/icon/home.png"),
+    },
+    trade: {
+      title: "Trade",
+      icon: require("../../assets/images/icon/trade.png"),
+    },
+    message: {
+      title: "Messages",
+      icon: require("../../assets/images/icon/message.png"),
+    },
+    cart: {
+      title: "Cart",
+      icon: require("../../assets/images/icon/cart.png"),
+    },
+    profile: {
+      title: "Profile",
+      icon: require("../../assets/images/icon/profile.png"),
+    },
+  };
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? "dark"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: "absolute",
           },
           default: {},
         }),
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="register"
-        options={{
-          title: "Register",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-circle" size={size} color={color} />
-          ),
-        }}
-      />
+      {Object.entries(tabConfig).map(([name, { title, icon }]) => (
+        <Tabs.Screen
+          key={name}
+          name={name}
+          options={{
+            title,
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source={icon} focused={focused} />
+            ),
+          }}
+        />
+      ))}
     </Tabs>
   );
 }
