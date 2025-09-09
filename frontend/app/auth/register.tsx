@@ -1,4 +1,5 @@
-import Colors, { Theme } from "@/constants/theme";
+import { Theme, Colors, Gradients } from "@/constants/theme";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
   Text,
@@ -15,7 +16,13 @@ export default function Register() {
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Image source={require("../../assets/images/icon/back-arrow.png")} />
       </TouchableOpacity>
-      <View style={styles.container}>
+
+      <LinearGradient
+        colors={Gradients.gradientRegister}
+        start={{ x: 1.2, y: 1.5 }}
+        end={{ x: 1.3, y: 0.6 }}
+        style={styles.container}
+      >
         <View>
           <Text style={styles.label}>Full Name</Text>
           <TextInput
@@ -71,7 +78,7 @@ export default function Register() {
         >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </View>
   );
 }
@@ -85,7 +92,9 @@ const styles = StyleSheet.create({
   },
   container: {
     margin: 16,
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingTop: 64,
+    paddingBottom: 64,
     width: "100%",
     height: "auto",
     backgroundColor: Theme.primary,
@@ -93,7 +102,7 @@ const styles = StyleSheet.create({
     gap: 20,
 
     elevation: 10,
-    shadowColor: "#fff",
+    shadowColor: "white",
   },
   backButton: {
     position: "absolute",
@@ -133,8 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     color: "white",
     padding: 12,
-    elevation: 9,
-    shadowColor: "white",
+
     marginTop: 32,
   },
   buttonText: {
