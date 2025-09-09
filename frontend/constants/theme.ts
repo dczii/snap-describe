@@ -14,4 +14,9 @@ export const Theme = {
   primary: "#1A2D42",
 };
 
-export default Colors;
+const Gradients = {
+  gradientButton: ["#1A2D42", "#2E4156", "#2E4156", "#1A2D42"] as const,
+  gradientRegister: ["#C5C6C7", "#1A2D42"] as const,
+};
+
+export { Colors, Gradients };
