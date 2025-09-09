@@ -7,7 +7,8 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
-import Colors, { Theme } from "@/constants/theme";
+import { Theme, Colors, Gradients } from "@/constants/theme";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Login() {
   const router = useRouter();
@@ -30,10 +31,18 @@ export default function Login() {
         />
 
         <TouchableOpacity
-          style={styles.button}
+          activeOpacity={0.8}
           onPress={() => router.replace("/(tabs)")}
+          style={{ width: "100%", marginTop: 16 }}
         >
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={Gradients.gradientButton}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <View>
@@ -49,14 +58,14 @@ export default function Login() {
           <Text>Continue with Gmail</Text>
         </View>
 
-        <TouchableOpacity onPress={() => router.push("/auth/register")}>
-          <Text style={{ marginTop: 16, color: Theme.text }}>
-            Don’t have an account?{" "}
+        <View style={{ marginTop: 16, flexDirection: "row" }}>
+          <Text style={{ color: Theme.text }}>Don’t have an account? </Text>
+          <TouchableOpacity onPress={() => router.push("/auth/register")}>
             <Text style={{ color: Colors.link, fontStyle: "italic" }}>
               Sign Up
             </Text>
-          </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
