@@ -1,6 +1,7 @@
 const Colors = {
   primary: "#1A2D42",
   secondary: "#2E4156",
+  rates: "#FFC107",
   background: "#AAB7B7",
   text: "#1A2D42",
   link: "#0069AA",
