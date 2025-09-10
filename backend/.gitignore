@@ -11,6 +11,7 @@ logs/
 *.log
 
 # misc
+package-lock.json
 /src/generated/prisma
 .DS_Store
 .env.keys 

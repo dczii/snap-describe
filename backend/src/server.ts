@@ -10,6 +10,7 @@ import { createContext } from "./lib/context";
 import logger from "./logger";
 import { prisma } from "./lib/prismaConn";
 import { router } from "./routes";
+import { localCache } from "./localCache";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -17,13 +18,18 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
-    introspection: process.env.NODE_ENV !== "production"
+    introspection: process.env.NODE_ENV !== "production",
+    formatError: (err) => {
+        return {
+            message: err.message
+        }
+    }
 });
 
 app.use(cors({
     origin: "*", // allow all origins for now hehe :D
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true,  
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -103,16 +109,26 @@ const shutdown = async (signal: string, isFatal: boolean) => {
 }
 
 //listener
-process.on("SIGINT", (sig) => shutdown(sig, false));
-process.on("SIGTERM", (sig) => shutdown(sig, false));
+process.on("SIGINT", (sig) => {
+    localCache.destroy()
+    shutdown(sig, false)
+   
+});
+process.on("SIGTERM", (sig) => {
+    localCache.destroy()
+    shutdown(sig, false)
+    
+});
 
 process.once("uncaughtException", (err) => {
     logger.debug("Uncaught exception:", err)
+    localCache.destroy()
     shutdown("UNCAUGHT_EXCEPTION", true)
 });
 
 process.once("unhandledRejection", (err) => {
     logger.debug("Unhandled rejection:", err)
+    localCache.destroy()
     shutdown("UNHANDLED_REJECTION", true)
 });
 
