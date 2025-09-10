@@ -1,5 +1,7 @@
 # dependencies
 node_modules/
+backend/node_modules/
+frontend/node_modules/
 
 # production
 dist/
@@ -7,6 +9,7 @@ build/
 
 # misc
 .DS_Store
+.env.keys 
 .env
 .env.*.local
 npm-debug.log*

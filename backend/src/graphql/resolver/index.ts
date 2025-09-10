@@ -1,6 +1,12 @@
-import { mergeResolvers } from "@graphql-tools/merge";
-import { temporaryUser } from "./query/tempUser";
+import { userQueries } from "./query/user.query";
+import { userMutations } from "./mutation/user.mutation";
 
-export const resolvers = mergeResolvers([
-    temporaryUser.Query,
-]);
+
+export const resolvers = {
+    Query: {
+        ...userQueries.Query,
+    },
+    Mutation: {
+        ...userMutations.Mutation,
+    }
+};
