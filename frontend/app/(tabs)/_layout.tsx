@@ -14,23 +14,23 @@ export default function TabLayout() {
   const tabConfig = {
     index: {
       title: "Home",
-      icon: require("../../assets/images/icon/home.png"),
+      icon: require("../../assets/icon/home.png"),
     },
     trade: {
       title: "Trade",
-      icon: require("../../assets/images/icon/trade.png"),
+      icon: require("../../assets/icon/trade.png"),
     },
     message: {
       title: "Messages",
-      icon: require("../../assets/images/icon/message.png"),
+      icon: require("../../assets/icon/message.png"),
     },
     cart: {
       title: "Cart",
-      icon: require("../../assets/images/icon/cart.png"),
+      icon: require("../../assets/icon/cart.png"),
     },
     profile: {
       title: "Profile",
-      icon: require("../../assets/images/icon/profile.png"),
+      icon: require("../../assets/icon/profile.png"),
     },
   };
 

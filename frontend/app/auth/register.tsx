@@ -14,7 +14,7 @@ export default function Register() {
   return (
     <View style={styles.containerTop}>
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Image source={require("../../assets/images/icon/back-arrow.png")} />
+        <Image source={require("../../assets/icon/back-arrow.png")} />
       </TouchableOpacity>
 
       <LinearGradient

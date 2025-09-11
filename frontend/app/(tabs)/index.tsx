@@ -7,42 +7,42 @@ export default function Home() {
   const products = [
     {
       id: 1,
-      src: require("../../assets/images/image/coat.png"),
+      src: require("../../assets/image/coat.png"),
       title: "Winter Coat",
       price: 190,
       rating: 4,
     },
     {
       id: 2,
-      src: require("../../assets/images/image/shoes.png"),
+      src: require("../../assets/image/shoes.png"),
       title: "Jordan Nike",
       price: 200,
       rating: 5,
     },
     {
       id: 3,
-      src: require("../../assets/images/image/fashion.png"),
+      src: require("../../assets/image/fashion.png"),
       title: "Louis Vuitton",
       price: 300,
       rating: 5,
     },
     {
       id: 4,
-      src: require("../../assets/images/image/jewelry-set.png"),
+      src: require("../../assets/image/jewelry-set.png"),
       title: "Jewelry Set",
       price: 500,
       rating: 4,
     },
     {
       id: 5,
-      src: require("../../assets/images/image/sunglass.png"),
+      src: require("../../assets/image/sunglass.png"),
       title: "Shades",
       price: 100,
       rating: 3,
     },
     {
       id: 6,
-      src: require("../../assets/images/image/pearl.png"),
+      src: require("../../assets/image/pearl.png"),
       title: "Sling Bag",
       price: 200,
       rating: 5,
@@ -83,7 +83,7 @@ export default function Home() {
     <View style={{ flex: 1 }}>
       <View style={Styles.banner}>
         <Image
-          source={require("../../assets/images/image/ads-sample.png")}
+          source={require("../../assets/image/ads-sample.png")}
           style={Styles.image}
           resizeMode="cover"
         />
