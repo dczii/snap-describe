@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "snap-describe",
-    "slug": "snap-describe",
+    "slug": "snap-d",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.snapd.snapd"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "939780dc-91c0-488a-bb90-64e208e3101a"
+      }
+    },
+    "owner": "snap-d"
   }
 }
