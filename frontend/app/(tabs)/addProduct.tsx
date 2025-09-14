@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function Message() {
+export default function addProduct() {
   return (
     <View>
-      <Text style={styles.title}>Message Page</Text>
+      <Text style={styles.title}>Add Product Page</Text>
     </View>
   );
 }

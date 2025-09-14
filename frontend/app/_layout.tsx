@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import {
   DarkTheme,
   DefaultTheme,
@@ -7,7 +6,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
+// import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useState } from "react";

@@ -2,8 +2,24 @@ import ImageContainer from "@/components/cards/ImageContainer";
 import { Colors, Theme } from "@/constants/theme";
 import { View, StyleSheet, Image, FlatList, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import SearchBar from "@/components/cards/SearchBar";
+import React, { useState, useMemo } from "react";
+import CategoryChips from "@/components/cards/Category";
+import BannerCarousel from "@/components/cards/Banner";
+
+const CATEGORIES = [
+  "Likes",
+  "Accessory",
+  "Top picks",
+  "Gadget",
+  "Trayhde",
+  "Fashion",
+];
 
 export default function Home() {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<string | null>(null);
+
   const products = [
     {
       id: 1,
@@ -49,6 +65,22 @@ export default function Home() {
     },
   ];
 
+  const BANNERS = [
+    require("../../assets/image/ads-sample.png"),
+    require("../../assets/image/ads-sample.png"),
+    require("../../assets/image/ads-sample.png"),
+  ];
+
+  const filteredProducts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return products.filter((p) => {
+      const t = p.title.toLowerCase();
+      const matchText = !q || t.includes(q);
+      const matchCat = !category || t.includes(category.toLowerCase());
+      return matchText && matchCat;
+    });
+  }, [query, category, products]);
+
   const renderItem = ({ item }: any) => (
     <View style={Styles.card}>
       <ImageContainer
@@ -81,17 +113,28 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={Styles.banner}>
-        <Image
-          source={require("../../assets/image/ads-sample.png")}
-          style={Styles.image}
-          resizeMode="cover"
+      {/* Search Bar on top */}
+      <View style={{ marginTop: 64 }}>
+        <SearchBar
+          value={query}
+          onChangeText={setQuery}
+          onSearch={() => console.log("Searching:", query)}
         />
       </View>
 
+      <View>
+        <CategoryChips data={CATEGORIES} onChange={setCategory} />
+      </View>
+
+      {/* Banner */}
+      <View style={Styles.banner}>
+        <BannerCarousel images={BANNERS} />
+      </View>
+
+      {/* Products */}
       <View style={Styles.productsContainer}>
         <FlatList
-          data={products}
+          data={filteredProducts}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           numColumns={3}
@@ -106,7 +149,7 @@ export default function Home() {
 const Styles = StyleSheet.create({
   banner: {
     padding: 12,
-    marginTop: 64,
+    marginTop: 6,
   },
   image: {
     width: "100%",

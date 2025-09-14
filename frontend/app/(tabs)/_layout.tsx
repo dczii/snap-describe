@@ -7,6 +7,7 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import TabIcon from "@/components/cards/TabIcon";
+import addProduct from "./addProduct";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -20,9 +21,9 @@ export default function TabLayout() {
       title: "Trade",
       icon: require("../../assets/icon/trade.png"),
     },
-    message: {
-      title: "Messages",
-      icon: require("../../assets/icon/message.png"),
+    addProduct: {
+      title: "Add Product",
+      icon: require("../../assets/icon/add-product.png"),
     },
     cart: {
       title: "Cart",
