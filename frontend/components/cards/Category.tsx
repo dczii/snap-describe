@@ -1,4 +1,3 @@
-// components/CategoryChips.tsx
 import { Colors, Theme } from "@/constants/theme";
 import React, { useState } from "react";
 import {
@@ -29,6 +28,20 @@ export default function CategoryChips({
     onChange?.(next);
   };
 
+  const RenderCategory = ({ item }: { item: string }) => {
+    const selected = active === item;
+
+    return (
+      <TouchableOpacity
+        onPress={() => toggle(item)}
+        activeOpacity={0.8}
+        style={[styles.chip, selected && styles.chipActive]}
+      >
+        <Text style={[styles.text, selected && styles.textActive]}>{item}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <FlatList
       data={data}
@@ -38,20 +51,7 @@ export default function CategoryChips({
       contentContainerStyle={styles.row}
       ListHeaderComponent={<View style={{ width: 12 }} />}
       ListFooterComponent={<View style={{ width: 12 }} />}
-      renderItem={({ item }) => {
-        const selected = active === item;
-        return (
-          <TouchableOpacity
-            onPress={() => toggle(item)}
-            activeOpacity={0.8}
-            style={[styles.chip, selected && styles.chipActive]}
-          >
-            <Text style={[styles.text, selected && styles.textActive]}>
-              {item}
-            </Text>
-          </TouchableOpacity>
-        );
-      }}
+      renderItem={RenderCategory}
     />
   );
 }
