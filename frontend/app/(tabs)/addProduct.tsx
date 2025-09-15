@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function Login() {
+export default function addProduct() {
   return (
     <View>
-      <Text style={styles.title}>Home Page</Text>
+      <Text style={styles.title}>Add Product Page</Text>
     </View>
   );
 }

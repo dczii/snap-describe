@@ -51,7 +51,7 @@ export default function Login() {
 
         <View style={styles.gmailContainer}>
           <Image
-            source={require("../../assets/images/icon/gmail.png")}
+            source={require("../../assets/icon/gmail.png")}
             style={{ width: 24, height: 24 }}
             resizeMode="contain"
           />
