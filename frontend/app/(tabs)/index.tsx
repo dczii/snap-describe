@@ -16,6 +16,12 @@ const CATEGORIES = [
   "Fashion",
 ];
 
+const BANNERS = [
+  require("../../assets/image/ads-sample.png"),
+  require("../../assets/image/ads-sample.png"),
+  require("../../assets/image/ads-sample.png"),
+];
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
@@ -63,12 +69,6 @@ export default function Home() {
       price: 200,
       rating: 5,
     },
-  ];
-
-  const BANNERS = [
-    require("../../assets/image/ads-sample.png"),
-    require("../../assets/image/ads-sample.png"),
-    require("../../assets/image/ads-sample.png"),
   ];
 
   const filteredProducts = useMemo(() => {
