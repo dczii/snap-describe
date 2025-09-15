@@ -40,10 +40,11 @@ class LocalCache extends EventEmitter {
 
     set<T>(key: string, value: T, ttlSeconds: number = 300) {
         const MS = 1000;
+        const now = Date.now()
         const entry = {
             value,
-            createdAt: Date.now(),
-            expiredAt: Date.now() + ttlSeconds * MS
+            createdAt: now,
+            expiredAt: now + ttlSeconds * MS
         }
 
         if (this.maxSize && this.storage.size >= this.maxSize) {
@@ -72,6 +73,7 @@ class LocalCache extends EventEmitter {
             return null;
         }
 
+
         this.hits++
         return entry.value as T
     }
@@ -82,11 +84,9 @@ class LocalCache extends EventEmitter {
 
     delete(key: string): boolean {
         const existed = this.storage.delete(key);
-        if(existed) this.emit("delete", {key});
-        return existed
+        if(existed) this.emit("delete", {key})
+        return existed !== null
     }
-
-
 
     //sorted set (imitation lang ng behavior).
     zAdd(key: string, score: number, member: string): boolean {
@@ -100,11 +100,6 @@ class LocalCache extends EventEmitter {
         zset.set(member, score);
         this.set(key, zset)
         return true;
-    }
-
-        clear(): void {
-        this.storage.clear();
-        this.emit("clear");
     }
 
     zCard(key: string): number {
@@ -123,6 +118,8 @@ class LocalCache extends EventEmitter {
         if(zset.size === 0) {
             this.delete(key)
         }
+
+
 
         return result
     }
@@ -150,6 +147,11 @@ class LocalCache extends EventEmitter {
         }
 
         return removed;
+    }
+
+    clear(): void {
+        this.storage.clear();
+        this.emit("clear");
     }
 
     //monitoring & other gen tools

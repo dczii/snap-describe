@@ -33,8 +33,16 @@ async function main () {
     //         })
     //     })
     // )
-
     
+    const hash_password = await bcrypt.hash("Tester01!", 10)
+    await prisma.user.create({
+        data: {
+            email: "tester01@gmail.com",
+            display_name: "Tester01",
+            password_hash: hash_password,
+            status: "unverified",
+        }
+    })
 
 }
 

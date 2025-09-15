@@ -9,8 +9,10 @@ import { resolvers } from "./graphql/resolver";
 import { createContext } from "./lib/context";
 import logger from "./logger";
 import { prisma } from "./lib/prismaConn";
-import { router } from "./routes";
+import { router } from "./routes/router";
 import { localCache } from "./localCache";
+import { authRouter } from "./routes/authRouter";
+import { jsonSyntaxError } from "./middlewares/formatHandler";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -34,9 +36,15 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+
 //routes
 app.use("/api", router)
+app.use("/auth", authRouter)
 
+//error handler
+app.use(jsonSyntaxError);
+
+//start server
 const port = process.env.PORT || 4000; // put in env later
 async function startServer() {
     await server.start();
