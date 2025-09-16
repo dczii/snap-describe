@@ -5,21 +5,6 @@ import { isWithinSlidingWindowLog } from "../utils/cacheUtils";
 import { isPhNum, isValidEmail, isValidPassword } from "../utils/validators";
 import { createUser, getUserByEmail } from "../data-access/user";
 import bcrypt from "bcrypt"
-/*
-    Task: Create authServices that have a feature to validate jwt token and 
-    provide limited access to prisma and other user information depends on 
-    authenticity of their token
-
-    1:  create class AuthService, constructor with parameter of private prisma instance.
-    2.  create builder method for authContext with parameter of authHeader
-    3.  extract the token from authHeader
-    4.  check if token is not empty - return prisma if empty
-    5.  decode token and return user credential and services
-    6.  handle error: check if instance of TokenExpiredError then return 
-        prisma with isExpired true
-    7.  don't throw a error just log it and return prisma
-*/
-//1: 
 
 class AuthServices {
     //login global rate limits
@@ -123,7 +108,7 @@ class AuthServices {
          //check limits & clean windows for client credentials
         if(!isWithinSlidingWindowLog( ipKey, this.SWL_IP_LIMIT, this.SWL_WINDOW )) throw new Error("RateLimitError");
         if(!isWithinSlidingWindowLog( deviceKey, this.SWL_DEVICE_LIMIT, this.SWL_WINDOW )) throw new Error("RateLimitError");
-        if(!isWithinSlidingWindowLog( globalKey, this.GLOBAL_LOGIN_LIMIT, this.GLOBAL_LOGIN_WINDOW )) throw new Error("RateLimitError");
+        if(!isWithinSlidingWindowLog( globalKey, this.GLOBAL_REGISTER_LIMIT, this.GLOBAL_REGISTER_WINDOW )) throw new Error("RateLimitError");
 
         //validate client input
         if(!isValidEmail(email) || !isValidPassword(password) || !isPhNum(phone_number)) throw new Error("InvalidCredentialsError");
@@ -141,12 +126,14 @@ class AuthServices {
         //create new user and prepare tokens
         const newUser = await createUser(fullname, phone_number, email, password);
         if(!newUser) throw new Error("DatabaseError");
+
         const payload = {
             userId: newUser.id,
             device: device_hash
         };
         const accessToken = createAccessToken(payload);
         const refreshToken = createRefreshToken(payload);
+
         return {
             accessToken,
             refreshToken
