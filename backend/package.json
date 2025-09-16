@@ -4,10 +4,15 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+<<<<<<< Updated upstream
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "start": "node ./src/server.ts",
     "dev": "nodemon ./src/server.ts"
+=======
+    "start": "dotenvx run -- node ./src/server.ts",
+    "dev": "dotenvx run -- nodemon ./src/server.ts"
+>>>>>>> Stashed changes
   },
   "author": "",
   "license": "ISC",
@@ -16,15 +21,23 @@
     "@apollo/server": "^5.0.0",
     "@as-integrations/express5": "^1.1.2",
     "@graphql-tools/merge": "^9.1.1",
+<<<<<<< Updated upstream
     "@prisma/client": "^6.16.1",
     "autocannon": "^8.0.0",
     "bcrypt": "^6.0.0",
+=======
+    "@prisma/client": "^6.13.0",
+>>>>>>> Stashed changes
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
+<<<<<<< Updated upstream
     "jsonwebtoken": "^9.0.2",
     "winston": "^3.17.0"
+=======
+    "jsonwebtoken": "^9.0.2"
+>>>>>>> Stashed changes
   },
   "devDependencies": {
     "@faker-js/faker": "^10.0.0",
@@ -34,7 +47,11 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "nodemon": "^3.1.10",
+<<<<<<< Updated upstream
     "prisma": "^6.16.1",
+=======
+    "prisma": "^6.13.0",
+>>>>>>> Stashed changes
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
