@@ -38,7 +38,7 @@ class AuthServices {
             return {
                 prisma: this.prisma,
                 userId: decodedToken.userId ?? null,
-                device_hash: decodedToken.device ?? null
+                deviceHash: decodedToken.device ?? null
             }
 
         } catch (err: unknown) {
@@ -52,12 +52,12 @@ class AuthServices {
         }
     }
 
-    async login (email: string, password: string, ip: string, device_hash: string) {
+    async login (email: string, password: string, ip: string, deviceHash: string) {
         //keys
         const globalKey = `swl:login:global`
         const ipKey = `swl:login:ip:${ip}`;
         const emailKey = `swl:login:email:${email}`;
-        const deviceKey = `swl:login:device:${device_hash}`;
+        const deviceKey = `swl:login:device:${deviceHash}`;
 
         //check limits & clean windows
         if(!isWithinSlidingWindowLog( ipKey, this.SWL_IP_LIMIT, this.SWL_WINDOW )) throw new Error("RateLimitError");
@@ -80,7 +80,7 @@ class AuthServices {
         //create tokens
         const payload = {
             userId: user.id,
-            device: device_hash
+            device: deviceHash
         }
         const accessToken = createAccessToken(payload);
         const refreshToken = createRefreshToken(payload);
@@ -92,18 +92,18 @@ class AuthServices {
 
     async register (
         fullname: string, 
-        phone_number: string, 
+        phoneNumber: string, 
         email: string, 
         password: string, 
         ip: string, 
-        device_hash: string
+        deviceHash: string
     ) {
         //keys
         const globalKey = `swl:register:global`;
         const ipKey = `swl:register:ip:${ip}`;
-        const deviceKey = `swl:register:device:${device_hash}`
+        const deviceKey = `swl:register:device:${deviceHash}`
         const emailKey = `swl:register:email:${email}`
-        const phoneKey = `swl:register:phone:${phone_number}`
+        const phoneKey = `swl:register:phone:${phoneNumber}`
 
          //check limits & clean windows for client credentials
         if(!isWithinSlidingWindowLog( ipKey, this.SWL_IP_LIMIT, this.SWL_WINDOW )) throw new Error("RateLimitError");
@@ -111,25 +111,25 @@ class AuthServices {
         if(!isWithinSlidingWindowLog( globalKey, this.GLOBAL_REGISTER_LIMIT, this.GLOBAL_REGISTER_WINDOW )) throw new Error("RateLimitError");
 
         //validate client input
-        if(!isValidEmail(email) || !isValidPassword(password) || !isPhNum(phone_number)) throw new Error("InvalidCredentialsError");
+        if(!isValidEmail(email) || !isValidPassword(password) || !isPhNum(phoneNumber)) throw new Error("InvalidCredentialsError");
 
         //no cp number checks for now
         const isUserExist = await getUserByEmail(email)
         if(isUserExist) throw new Error("AlreadyExist");
         
-        //check limits & clean windows for email and phone_number
+        //check limits & clean windows for email and phoneNumber
         if(
             !isWithinSlidingWindowLog( emailKey, this.SWL_EMAIL_LIMIT, this.SWL_WINDOW) ||
             !isWithinSlidingWindowLog( phoneKey, this.SWL_PHONE_NUM_LIMIT, this.SWL_WINDOW)
         ) throw new Error("RateLimitError");
 
         //create new user and prepare tokens
-        const newUser = await createUser(fullname, phone_number, email, password);
+        const newUser = await createUser(fullname, phoneNumber, email, password);
         if(!newUser) throw new Error("DatabaseError");
 
         const payload = {
             userId: newUser.id,
-            device: device_hash
+            device: deviceHash
         };
         const accessToken = createAccessToken(payload);
         const refreshToken = createRefreshToken(payload);

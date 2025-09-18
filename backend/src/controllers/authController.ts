@@ -2,53 +2,70 @@ import {Request, Response} from "express"
 import { hashClientDevice, getClientIp } from "../utils/authUtils";
 import { authServices } from "../services/authServices";
 import logger from "../logger";
+import { TraceRequest } from "../middlewares/traceIdGenerator";
 
 export const authController = {
     login: async (req: Request, res: Response) => {
         const {email, password} = req.body;
         const ip = getClientIp(req);
-        const device_hash = hashClientDevice(req);
+        const deviceHash = hashClientDevice(req);
 
         try {
-            const { accessToken, refreshToken } = await authServices.login(email, password, ip, device_hash);
-            res.status(200).json({accessToken, refreshToken,})
+            const { accessToken, refreshToken } = await authServices.login(email.toLowerCase(), password, ip, deviceHash);
+            res.status(200).json({
+                message: "Login successful",
+                accessToken, 
+                refreshToken,
+            })
             
         } catch (err) {
+
             if (err instanceof Error) {
                 if (err.message === "RateLimitError")  {
-                    return res.status(429).json({message: "Too Many Request"});
+                    return res.status(429).json({code: "RATE_LIMIT", message: "Too Many Request"});
                 }
                     
                 if (err.message === "InvalidCredentialsError") {
-                    return res.status(400).json({message: "Incorrect email or password"});
+                    return res.status(400).json({code: "INVALID_CREDENTIALS", message: "Incorrect email or password"});
                 }
             }
-            logger.error("Login Error: ", err)
-            res.status(500).json({message: "Internal Server Error"})
+
+            logger.error("Login error: ", {
+                code: "INTERNAL_ERROR",
+                message: "Internal Server Error",
+                traceId: (req as TraceRequest).traceId,
+                endpoint: req.originalUrl,
+                stack: err instanceof Error ? err.stack : undefined,
+            })
+            
+            res.status(500).json({
+                code: "INTERNAL_ERROR",
+                message: "Internal Server Error",
+                traceId: (req as TraceRequest).traceId
+            })
         }
     },
 
     register: async (req: Request, res: Response) => {
-        logger.info("Hit at register")
-        const { fullname, phone_number, email, password } = req.body;
+        const { fullname, phoneNumber, email, password } = req.body;
         const ip = getClientIp(req);
-        const device_hash = hashClientDevice(req);
+        const deviceHash = hashClientDevice(req);
 
         try {
-            const {accessToken, refreshToken} = await authServices.register(fullname, phone_number, email, password, ip, device_hash)
+            const {accessToken, refreshToken} = await authServices.register(fullname, phoneNumber, email.toLowerCase(), password, ip, deviceHash)
             res.status(200).json({accessToken, refreshToken})
         } catch (err) {
             if (err instanceof Error) {
                 if (err.message === "RateLimitError")  {
-                    return res.status(429).json({message: "Too Many Request"});
+                    return res.sendStatus(429)
                 }
                     
                 if (err.message === "InvalidCredentialsFormatError") {
-                    return res.status(400).json({message: "Invalid format"});
+                    return res.sendStatus(400)
                 }
 
                 if (err.message === "DatabaseError") {
-                    return res.status(400).json({message: "Login failed"});
+                    return res.status(500).json({message: "Login failed"});
                 }
             }
             logger.error(err)

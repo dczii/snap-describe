@@ -12,6 +12,10 @@ import { prisma } from "./lib/prismaConn";
 import { router } from "./routes/router";
 import { localCache } from "./localCache";
 import { jsonSyntaxErrorAndEmptyBodyHandler } from "./middlewares/formatHandler";
+import { swaggerSpec } from "./swagger";
+import swaggerUi from "swagger-ui-express";
+import { authRouter } from "./routes/authRouter";
+import { traceRequest } from "./middlewares/traceIdGenerator";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -28,17 +32,24 @@ const server = new ApolloServer({
 });
 
 app.use(cors({
-    origin: "*", // allow all origins for now hehe :D
+    origin: "*", 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,  
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(traceRequest)
+
+//OAS docs via swagger
+if (process.env.NODE_ENV !== "production") {
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 //routes
 app.use("/api", router)
+app.use("/v1/auth", authRouter)
 
-//errorHnalder
+//error handlers
 app.use(jsonSyntaxErrorAndEmptyBodyHandler);
 
 //start server

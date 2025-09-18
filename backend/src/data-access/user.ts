@@ -32,14 +32,14 @@ export async function getUserByEmail(email: string): Promise<UserDTO | null>{
 }
  
 //no type for now
-export async function createUser(fullname: string, phone_number: string, email: string, password: string) {
+export async function createUser(fullname: string, phoneNumber: string, email: string, password: string) {
     try {   
         const hashPassword = await bcrypt.hash(password, 10)
         const user = await prisma.user.create({
             data: {
                 display_name: fullname,
                 email,
-                phone_number,
+                phone_number: phoneNumber,
                 password_hash: hashPassword,
             },
             select: {

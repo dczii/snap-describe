@@ -3,11 +3,6 @@ export const validator = <T>(...validators: Array<(value: T) => boolean>) => (va
     return validators.every(validator => validator(value))
 }
 
-//general use
-// export const isSafeInput = () => (str: string): boolean => !/[\[\]<>\/{}()"';:`$&|=*\\]/.test(str); 
-// export const isLength = (min: number = 3, max: number = 250) => (str: string): boolean => str.length >= min && str.length <= max
-// export const isValidInput = validator(isSafeInput(), isLength())
-
 //specific
 export const isValidEmail = (email: string) => {
     if (/[<>\[\]{}"';:`$&|=*\\]/.test(email)) return false

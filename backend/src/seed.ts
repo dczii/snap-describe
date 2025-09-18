@@ -21,20 +21,19 @@ async function hashPassword (pass: string) {
 }
 
 async function main () {
-    // await Promise.all(
-    //     Array.from({length: 10}).map(async () => {
-    //         await prisma.user.create({
-    //             data: {
-    //                 email: generateUniqueEmail(),
-    //                 display_name: faker.person.fullName(),
-    //                 password_hash: await hashPassword(faker.internet.password()),
-    //                 status: Math.random() > 0.5 ? "verified" : "unverified",
-    //             }
-    //         })
-    //     })
-    // )
-
-    
+    await Promise.all(
+        Array.from({length: 10}).map(async () => {
+            await prisma.user.create({
+                data: {
+                    email: generateUniqueEmail(),
+                    display_name: faker.person.fullName(),
+                    password_hash: await hashPassword(faker.internet.password()),
+                    status: Math.random() > 0.5 ? "verified" : "unverified",
+                    phone_number: "09090909090"
+                }
+            })
+        })
+    )
 
 }
 
