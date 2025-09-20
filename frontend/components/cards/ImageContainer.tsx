@@ -19,6 +19,9 @@ interface ImageContainerProps {
   title?: string;
   description?: string;
   price?: number;
+  sold?: number;
+  location?: string;
+  comment?: string;
 }
 
 const ImageContainer: React.FC<ImageContainerProps> = ({
@@ -31,6 +34,9 @@ const ImageContainer: React.FC<ImageContainerProps> = ({
   title,
   description,
   price,
+  sold,
+  location,
+  comment,
 }) => {
   return (
     <View style={[{ width, height, borderRadius, overflow: "hidden" }, style]}>
