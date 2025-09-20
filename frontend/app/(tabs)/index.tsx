@@ -113,7 +113,6 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Search Bar on top */}
       <View style={{ marginTop: 64 }}>
         <SearchBar
           value={query}
@@ -151,12 +150,6 @@ const Styles = StyleSheet.create({
     padding: 12,
     marginTop: 6,
   },
-  image: {
-    width: "100%",
-    height: undefined,
-    aspectRatio: 16 / 9,
-    borderRadius: 12,
-  },
   grid: {
     paddingHorizontal: 2,
     paddingBottom: 24,
@@ -179,17 +172,12 @@ const Styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: "600",
     color: "white",
-    marginTop: 6,
   },
   price: {
     fontSize: 12,
     fontWeight: "bold",
     color: "white",
     marginTop: 2,
-  },
-  ratingRow: {
-    flexDirection: "row",
-    marginTop: 16,
   },
   productsContainer: {
     flex: 1,
