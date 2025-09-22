@@ -57,6 +57,7 @@ export default function CategoryChips({
 }
 
 const styles = StyleSheet.create({
+  // LAYOUT
   row: {
     paddingVertical: 10,
   },
@@ -78,11 +79,15 @@ const styles = StyleSheet.create({
       android: { elevation: 2 },
     }),
   },
+
+  // TYPOGRAPHY
   text: {
     color: Colors.text,
     fontWeight: "bold",
     fontSize: 14,
   },
+
+  // ACTIONS
   chipActive: {
     backgroundColor: Colors.background,
   },
