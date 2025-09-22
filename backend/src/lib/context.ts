@@ -1,6 +1,6 @@
 import { prisma } from "./prismaConn";
 import { Request, Response } from "express";
-import { verifyAccessToken } from "../services/jwtUtils";
+import { verifyAccessToken } from "../utils/jwtUtils";
 import logger from "../logger";
 
 export async function createContext({req, res}: {req: Request, res: Response}){

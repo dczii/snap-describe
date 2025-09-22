@@ -1,0 +1,294 @@
+openapi: 3.0.3
+info:
+  title: Snap-Describe API
+  description: >
+    This documentation provides details of how to interact with Snap-Describe API.
+    Includes authentication, request/response format, and examples for client integration.
+  version: 1.0.0
+  contact:
+    email: JaySoguilonIS@gmail.com
+  license:
+    name: Proprietary - Internal Use Only
+
+servers:
+  - url: http://localhost:3000/docs
+
+tags:
+  - name: mobile-auth
+    description: Mobile login and registration
+
+paths:
+  /v1/auth/mobile/login:
+    post:
+      tags:
+        - mobile-auth
+      summary: Mobile Login
+      description: Authenticate mobile users and return JWT tokens
+      operationId: loginMobileUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileLoginRequest'
+            examples:
+              loginExample:
+                summary: Example login request
+                value:
+                  email: "user@example.com"
+                  password: "password123"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              examples:
+                successExample:
+                  summary: Successful login
+                  value:
+                    message: "Login successful"
+                    data:
+                      accessToken: "jwt_token_here"
+                      refreshToken: "jwt_refresh_token_here"
+        '400':
+          description: Invalid body format or Incorrect email/password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+              examples:
+                invalidExample:
+                  summary: Invalid credentials
+                  value:
+                    code: "INVALID_CREDENTIALS"
+                    message: "Incorrect email or password"
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+              examples:
+                rateLimitExample:
+                  summary: Rate limit exceeded
+                  value:
+                    code: "RATE_LIMIT"
+                    message: "Too many requests."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                fatalExample:
+                  summary: Fatal server error
+                  value:
+                    code: "INTERNAL_ERROR"
+                    message: "Internal server error"
+                    traceId: "abc123xyz"
+  /v1/auth/mobile/register:
+    post:
+      tags:
+        - mobile-auth
+      summary: Mobile registration
+      description: Register mobile users and return JWT Tokens
+      operationId: RegisterMobileUser
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/MobileRegisterRequest'
+            example:
+              registerExample:
+                summary: Example register request
+                value:
+                  fullname: Jaylord Soguilon
+                  phoneNumber: "09090909090"
+      responses:
+        '200':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileRegisterResponse'
+              examples:
+                successExample:
+                  summary: Successful registration
+                  value:
+                    message: "You've successfully registered."
+                    data:   
+                      accessToken: "jwt_token_here"
+                      refreshToken: "jwt_refresh_token_here"
+        '400':
+          description: Bad request. Invalid body format
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/ClientError'
+              examples:
+                invalidExample:
+                  summary: Invalid credentials
+                  value:
+                    code: "INVALID_CREDENTIALS"
+                    message: "Invalid format."
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+              examples:
+                rateLimitExample:
+                  summary: Rate limit exceeded
+                  value: 
+                    code: "RATE_LIMIT"
+                    message: "Too Many Request"
+        '500':
+          description: Internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+              examples: 
+                fatalExample:
+                  summary: Fatal server error
+                  value: 
+                    code: "INTERNAL_ERROR"
+                    message: "Internal server error"
+                    traceId: "abc123xyz"        
+components:
+  schemas:
+    MobileLoginRequest:
+      type: object
+      description: Request body for mobile login
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+      example:
+        email: "user@example.com"
+        password: "password123"
+
+    LoginResponse:
+      type: object
+      description: Response for successful login
+      properties:
+        message:
+          type: string
+          description: Human-readable message
+        data:
+          type: object
+          description: Login payload
+          properties:
+            accessToken:
+              type: string
+              description: JWT access token, used to access data
+            refreshToken:
+              type: string
+              description: JWT refresh token, used to refresh access
+          required:
+            - accessToken
+            - refreshToken
+      required:
+        - message
+        - data
+
+    MobileRegisterRequest:
+      type: object
+      description: Request body for mobile registration
+      properties:
+        fullname:
+          type: string
+        phoneNumber:
+          type: string
+          pattern: '^09\d{9}$'
+          description: Philippine mobile number, local format (e.g., 09171234567)
+        email: 
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - fullname
+        - phoneNumber
+        - email
+        - password
+    
+    MobileRegisterResponse:
+      type: object
+      description: Response for successful registration
+      properties: 
+        message: 
+          type: string
+          description: Human-readable error message
+        data: 
+          type: object
+          properties:
+            accessToken:
+              type: string
+              description: JWT access token, use to access data
+            refreshToken:
+              type: string
+              description: JWT refresh token, used to refresh access
+          required:
+            - accessToken
+            - refreshToken
+      required:
+        - message
+        - data
+        
+    ClientError:
+      type: object
+      description: Standard client error (4xx)
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: string
+          description: Optional extra information
+      required:
+        - code
+        - message
+
+    InternalServerError:
+      type: object
+      description: Standard server error (5xx)
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+        traceId:
+          type: string
+          description: Unique ID for tracing errors in logs
+        endpoint: 
+          type: string
+          description: Endpoint where the error occurred
+        stack:
+          type: string
+          description: Optional stack trace
+      required:
+        - code
+        - message
+        - traceId
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
