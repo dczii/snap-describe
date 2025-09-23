@@ -102,11 +102,6 @@ class LocalCache extends EventEmitter {
         return true;
     }
 
-        clear(): void {
-        this.storage.clear();
-        this.emit("clear");
-    }
-
     zCard(key: string): number {
         const zset = this.get<Map<string, number>>(key);
         return zset ? zset.size : 0
@@ -186,6 +181,11 @@ class LocalCache extends EventEmitter {
             hits: this.hits,
             misses: this.misses
         }
+    }
+    
+    clear(): void {
+        this.storage.clear()
+        this.emit("clear")
     }
 
     cleanup(): void {

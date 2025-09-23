@@ -6,7 +6,7 @@ const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET
 
 //Access token
 export function createAccessToken(payload: JwtPayload) {
-    return jwt.sign(payload, JWT_ACCESS_TOKEN_SECRET!, { expiresIn: '15m' })
+    return jwt.sign(payload, JWT_ACCESS_TOKEN_SECRET!, { expiresIn: '10m' })
 }
 export function verifyAccessToken(token: string) {
     return jwt.verify(token, JWT_ACCESS_TOKEN_SECRET!) as JwtPayload
@@ -24,5 +24,6 @@ export function verifyRefreshToken(token: string) {
 export function stripPayloadClaims(payload: TokenWithClaims): JwtPayload {
     return {
         userId: payload.userId,
+        device: payload.device
     }
 }

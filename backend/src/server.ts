@@ -1,5 +1,5 @@
 import {ApolloServer} from "@apollo/server";
-import express, {Request, Response} from "express";
+import express, {Request, Response, NextFunction} from "express";
 import http from "http";
 import {ApolloServerPluginDrainHttpServer} from "@apollo/server/plugin/drainHttpServer";
 import {expressMiddleware} from "@as-integrations/express5";
@@ -9,34 +9,66 @@ import { resolvers } from "./graphql/resolver";
 import { createContext } from "./lib/context";
 import logger from "./logger";
 import { prisma } from "./lib/prismaConn";
-import { router } from "./routes";
+import { router } from "./routes/router";
 import { localCache } from "./localCache";
+import { jsonSyntaxErrorAndEmptyBodyHandler } from "./middlewares/formatHandler";
+import { swaggerSpec } from "./swagger";
+import swaggerUi from "swagger-ui-express";
+import { authRouter } from "./routes/authRouter";
+import { traceRequest } from "./middlewares/traceIdGenerator";
+import { ApolloServerPluginLandingPageDisabled } from "@apollo/server/plugin/disabled";
+import { GraphQLError, GraphQLFormattedError } from "graphql";
+import { requireJson } from "./middlewares/graphqlMiddlewares";
 
+const isProd = process.env.NODE_ENV === "production";
 const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
-    introspection: process.env.NODE_ENV !== "production",
-    formatError: (err) => {
-        return {
-            message: err.message
+    plugins: [
+        ApolloServerPluginDrainHttpServer({httpServer}),
+        ...(isProd ? [ApolloServerPluginLandingPageDisabled()]: [])
+    ],
+    introspection: !isProd,
+    //simple error format for now
+    formatError: (formatError: GraphQLFormattedError, error: unknown): GraphQLFormattedError  => {
+        if (error instanceof GraphQLError && typeof error.extensions?.code === "string") {
+            return {
+                message: error.extensions.code,
+            };
         }
+        return {
+            message: "Internal server error",
+        };
     }
 });
 
 app.use(cors({
-    origin: "*", // allow all origins for now hehe :D
+    origin: "*", 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,  
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(traceRequest)
+
+//OAS docs via swagger
+if (process.env.NODE_ENV !== "production") {
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 //routes
 app.use("/api", router)
+app.use("/v1/auth", authRouter)
 
+//error handlers
+app.use(jsonSyntaxErrorAndEmptyBodyHandler);
+
+//graphql shields
+app.use(requireJson); //every request must be application/json
+
+//start server
 const port = process.env.PORT || 4000; // put in env later
 async function startServer() {
     await server.start();

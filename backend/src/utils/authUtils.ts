@@ -1,11 +1,12 @@
 import { Request } from "express";
 import crypto from "crypto"
+
 export function getClientIp (req: Request) {
     const forwarded = req.headers["x-forwarded-for"]
-    return Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0] || req.socket.remoteAddress
+    return Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0] || req.socket.remoteAddress || "127.0.0.1"
 }
 
-export function createHashedClientSignature (req: Request) {
+export function hashClientDevice (req: Request) {
     const deviceFingerprint = {
         userAgent: req.headers["user-agent"] || "",
         acceptLang: req.headers["accept-language"] || "",
