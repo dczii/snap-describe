@@ -1,39 +1,26 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { Theme, Colors, Gradients } from "@/constants/theme";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-type Errors = {
+type FormProps = {
   email?: string;
   password?: string;
 };
 
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
+});
+
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const [errors, setErrors] = useState<Errors>({});
-
-  const validateForm = () => {
-    const newErrors: Errors = {};
-
-    if (!email.trim()) newErrors.email = "Required to fill.";
-    else if (!/\S+@\S+\.\S+/.test(email))
-      newErrors.email = "Invalid email format.";
-    if (!password.trim()) newErrors.password = "Required to fill.";
-  };
-
-  const handleLogin = async () => {
+  const handleLogin = async (values: FormProps) => {
     try {
+      const { email = "", password = "" } = values;
       const response = await fetch(
         "https://snap-describe-production.up.railway.app/v1/auth/mobile/login",
         {
@@ -52,9 +39,7 @@ export default function Login() {
         router.replace("/(tabs)");
       } else {
         const message =
-          data.message !== "Incorrect email or password."
-            ? "Login failed"
-            : data.message;
+          data.message !== "Incorrect email or password." ? "Login failed" : data.message;
         alert(message);
       }
     } catch (error) {
@@ -67,40 +52,48 @@ export default function Login() {
       <View style={styles.container}>
         <Text style={styles.title}>Login Page</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email or Phone"
-          placeholderTextColor={Theme.text}
-          value={email}
-          onChangeText={setEmail}
-        />
-        {errors.email && <Text style={styles.errorFull}>{errors.email}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor={Theme.text}
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-        {errors.email && (
-          <Text style={styles.errorFull}>{errors.password}</Text>
-        )}
-
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={handleLogin}
-          style={{ width: "100%", marginTop: 16 }}
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => handleLogin(values)}
         >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={Gradients.gradientButton}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          {({ handleChange, handleSubmit, errors, values }) => (
+            <View style={styles.container}>
+              <TextInput
+                style={styles.input}
+                placeholder='Email or Phone'
+                placeholderTextColor={Theme.text}
+                value={values.email}
+                onChangeText={handleChange("email")}
+              />
+              {errors.email && <Text style={styles.errorFull}>{errors.email}</Text>}
+              <TextInput
+                style={styles.input}
+                placeholder='Password'
+                placeholderTextColor={Theme.text}
+                secureTextEntry
+                value={values.password}
+                onChangeText={handleChange("password")}
+              />
+              {errors.email && <Text style={styles.errorFull}>{errors.password}</Text>}
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={(e) => handleSubmit()}
+                style={{ width: "100%", marginTop: 16 }}
+              >
+                <LinearGradient
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  colors={Gradients.gradientButton}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>LOGIN</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Formik>
 
         <View>
           <Text style={{ marginTop: 16, color: Theme.text }}>or</Text>
@@ -110,7 +103,7 @@ export default function Login() {
           <Image
             source={require("../../assets/icon/gmail.png")}
             style={{ width: 24, height: 24 }}
-            resizeMode="contain"
+            resizeMode='contain'
           />
           <Text>Continue with Gmail</Text>
         </View>
@@ -118,9 +111,7 @@ export default function Login() {
         <View style={{ marginTop: 16, flexDirection: "row" }}>
           <Text style={{ color: Theme.text }}>Don’t have an account? </Text>
           <TouchableOpacity onPress={() => router.push("/auth/register")}>
-            <Text style={{ color: Colors.link, fontStyle: "italic" }}>
-              Sign Up
-            </Text>
+            <Text style={{ color: Colors.link, fontStyle: "italic" }}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>
