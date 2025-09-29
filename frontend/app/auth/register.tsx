@@ -9,9 +9,10 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { useState } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-type Errors = {
+type FormProps = {
   fullname?: string;
   email?: string;
   phoneNumber?: string;
@@ -19,54 +20,28 @@ type Errors = {
   confirmPassword?: string;
 };
 
+const validationSchema = Yup.object().shape({
+  fullname: Yup.string().required("Fullname is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  phoneNumber: Yup.string()
+    .min(11, "Min 11 digits")
+    .required("Phone number is required"),
+  password: Yup.string().min(6, "Min 6 char").required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Confirm your password"),
+});
+
 export default function Register() {
-  const [fullname, setFullname] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [errors, setErrors] = useState<Errors>({});
-
-  const validateForm = (): boolean => {
-    const newErrors: Errors = {};
-
-    if (!fullname.trim()) newErrors.fullname = "Required to fill.";
-
-    if (!email.trim()) newErrors.email = "Required to fill.";
-    else if (!/\S+@\S+\.\S+/.test(email))
-      newErrors.email = "Invalid email format.";
-
-    const phoneRegex = /^(\+63|0)\d{10}$/;
-    if (!phoneNumber.trim()) {
-      newErrors.phoneNumber = "Required to fill.";
-    } else if (!phoneRegex.test(phoneNumber)) {
-      newErrors.phoneNumber = "Invalid phone number format.";
-    }
-
-    if (!password) {
-      newErrors.password = "Required to fill.";
-    } else if (
-      !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,}).*$/.test(password)
-    ) {
-      newErrors.password =
-        "Password must be 8+ characters, include 1 uppercase, 1 number, and 1 special character";
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Required to fill.";
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Password not match.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleRegister = async () => {
-    if (!validateForm()) return;
-
+  const handleRegister = async (values: FormProps) => {
     try {
+      const {
+        fullname = "",
+        email = "",
+        phoneNumber = "",
+        password = "",
+        confirmPassword = "",
+      } = values;
       const response = await fetch(
         "https://snap-describe-production.up.railway.app/v1/auth/mobile/register",
         {
@@ -74,7 +49,13 @@ export default function Register() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ fullname, phoneNumber, email, password }),
+          body: JSON.stringify({
+            fullname,
+            phoneNumber,
+            email,
+            password,
+            confirmPassword,
+          }),
         }
       );
 
@@ -101,86 +82,105 @@ export default function Register() {
         <Image source={require("../../assets/icon/back-arrow.png")} />
       </TouchableOpacity>
 
-      <LinearGradient
-        colors={Gradients.gradientRegister}
-        start={{ x: 1.2, y: 1.5 }}
-        end={{ x: 1.3, y: 0.6 }}
-        style={styles.container}
+      <Formik
+        initialValues={{
+          fullname: "",
+          email: "",
+          phoneNumber: "",
+          password: "",
+          confirmPassword: "",
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => handleRegister(values)}
       >
-        <View>
-          <Text style={styles.label}>Full Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Juan Dela Cruz"
-            placeholderTextColor={Colors.placeholder}
-            value={fullname}
-            onChangeText={setFullname}
-          />
-          {errors.fullname && (
-            <Text style={styles.errorFull}>{errors.fullname}</Text>
-          )}
-        </View>
+        {({ handleChange, handleSubmit, errors, values }) => (
+          <LinearGradient
+            colors={Gradients.gradientRegister}
+            start={{ x: 1.2, y: 1.5 }}
+            end={{ x: 1.3, y: 0.6 }}
+            style={styles.container}
+          >
+            <View>
+              <Text style={styles.label}>Full Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Juan Dela Cruz"
+                placeholderTextColor={Colors.placeholder}
+                value={values.fullname}
+                onChangeText={handleChange("fullname")}
+              />
+              {errors.fullname && (
+                <Text style={styles.errorFull}>{errors.fullname}</Text>
+              )}
+            </View>
 
-        <View>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="juandelacruz@gmail.com"
-            placeholderTextColor={Colors.placeholder}
-            value={email}
-            onChangeText={setEmail}
-          />
-          {errors.email && <Text style={styles.errorFull}>{errors.email}</Text>}
-        </View>
+            <View>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="juandelacruz@gmail.com"
+                placeholderTextColor={Colors.placeholder}
+                value={values.email}
+                onChangeText={handleChange("email")}
+              />
+              {errors.email && (
+                <Text style={styles.errorFull}>{errors.email}</Text>
+              )}
+            </View>
 
-        <View>
-          <Text style={styles.label}>Phone</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="0917-218-6677"
-            placeholderTextColor={Colors.placeholder}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
-          {errors.phoneNumber && (
-            <Text style={styles.errorFull}>{errors.phoneNumber}</Text>
-          )}
-        </View>
+            <View>
+              <Text style={styles.label}>Phone</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="0917-218-6677"
+                placeholderTextColor={Colors.placeholder}
+                value={values.phoneNumber}
+                onChangeText={handleChange("phoneNumber")}
+              />
+              {errors.phoneNumber && (
+                <Text style={styles.errorFull}>{errors.phoneNumber}</Text>
+              )}
+            </View>
 
-        <View>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Password"
-            placeholderTextColor={Colors.placeholder}
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          {errors.password && (
-            <Text style={styles.errorFull}>{errors.password}</Text>
-          )}
-        </View>
+            <View>
+              <Text style={styles.label}>Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Password"
+                placeholderTextColor={Colors.placeholder}
+                secureTextEntry
+                value={values.password}
+                onChangeText={handleChange("password")}
+              />
+              {errors.password && (
+                <Text style={styles.errorFull}>{errors.password}</Text>
+              )}
+            </View>
 
-        <View>
-          <Text style={styles.label}>Confirm Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Re-enter Password"
-            placeholderTextColor={Colors.placeholder}
-            secureTextEntry
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
-          {errors.confirmPassword && (
-            <Text style={styles.errorFull}>{errors.confirmPassword}</Text>
-          )}
-        </View>
+            <View>
+              <Text style={styles.label}>Confirm Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Re-enter Password"
+                placeholderTextColor={Colors.placeholder}
+                secureTextEntry
+                value={values.confirmPassword}
+                onChangeText={handleChange("confirmPassword")}
+              />
+              {errors.confirmPassword && (
+                <Text style={styles.errorFull}>{errors.confirmPassword}</Text>
+              )}
+            </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-      </LinearGradient>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleSubmit}
+            >
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        )}
+      </Formik>
     </View>
   );
 }

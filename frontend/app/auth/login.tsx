@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Theme, Colors, Gradients } from "@/constants/theme";
 import { LinearGradient } from "expo-linear-gradient";
@@ -39,7 +46,9 @@ export default function Login() {
         router.replace("/(tabs)");
       } else {
         const message =
-          data.message !== "Incorrect email or password." ? "Login failed" : data.message;
+          data.message !== "Incorrect email or password."
+            ? "Login failed"
+            : data.message;
         alert(message);
       }
     } catch (error) {
@@ -61,21 +70,25 @@ export default function Login() {
             <View style={styles.container}>
               <TextInput
                 style={styles.input}
-                placeholder='Email or Phone'
+                placeholder="Email or Phone"
                 placeholderTextColor={Theme.text}
                 value={values.email}
                 onChangeText={handleChange("email")}
               />
-              {errors.email && <Text style={styles.errorFull}>{errors.email}</Text>}
+              {errors.email && (
+                <Text style={styles.errorFull}>{errors.email}</Text>
+              )}
               <TextInput
                 style={styles.input}
-                placeholder='Password'
+                placeholder="Password"
                 placeholderTextColor={Theme.text}
                 secureTextEntry
                 value={values.password}
                 onChangeText={handleChange("password")}
               />
-              {errors.email && <Text style={styles.errorFull}>{errors.password}</Text>}
+              {errors.email && (
+                <Text style={styles.errorFull}>{errors.password}</Text>
+              )}
 
               <TouchableOpacity
                 activeOpacity={0.8}
@@ -103,7 +116,7 @@ export default function Login() {
           <Image
             source={require("../../assets/icon/gmail.png")}
             style={{ width: 24, height: 24 }}
-            resizeMode='contain'
+            resizeMode="contain"
           />
           <Text>Continue with Gmail</Text>
         </View>
@@ -111,7 +124,9 @@ export default function Login() {
         <View style={{ marginTop: 16, flexDirection: "row" }}>
           <Text style={{ color: Theme.text }}>Don’t have an account? </Text>
           <TouchableOpacity onPress={() => router.push("/auth/register")}>
-            <Text style={{ color: Colors.link, fontStyle: "italic" }}>Sign Up</Text>
+            <Text style={{ color: Colors.link, fontStyle: "italic" }}>
+              Sign Up
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -128,7 +143,8 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.primary,
   },
   container: {
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 32,
     width: "80%",
     backgroundColor: "white",
     borderRadius: 12,
