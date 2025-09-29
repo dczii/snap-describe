@@ -9,9 +9,58 @@ import {
 import { useRouter } from "expo-router";
 import { Theme, Colors, Gradients } from "@/constants/theme";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+
+type Errors = {
+  email?: string;
+  password?: string;
+};
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
+
+  const [errors, setErrors] = useState<Errors>({});
+
+  const validateForm = () => {
+    const newErrors: Errors = {};
+
+    if (!email.trim()) newErrors.email = "Required to fill.";
+    else if (!/\S+@\S+\.\S+/.test(email))
+      newErrors.email = "Invalid email format.";
+    if (!password.trim()) newErrors.password = "Required to fill.";
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(
+        "https://snap-describe-production.up.railway.app/v1/auth/mobile/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login Successfully");
+        router.replace("/(tabs)");
+      } else {
+        const message =
+          data.message !== "Incorrect email or password."
+            ? "Login failed"
+            : data.message;
+        alert(message);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -22,17 +71,25 @@ export default function Login() {
           style={styles.input}
           placeholder="Email or Phone"
           placeholderTextColor={Theme.text}
+          value={email}
+          onChangeText={setEmail}
         />
+        {errors.email && <Text style={styles.errorFull}>{errors.email}</Text>}
         <TextInput
           style={styles.input}
           placeholder="Password"
           placeholderTextColor={Theme.text}
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
+        {errors.email && (
+          <Text style={styles.errorFull}>{errors.password}</Text>
+        )}
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.replace("/(tabs)")}
+          onPress={handleLogin}
           style={{ width: "100%", marginTop: 16 }}
         >
           <LinearGradient
@@ -72,6 +129,7 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  // CONTAINERS
   wrapper: {
     flex: 1,
     justifyContent: "center",
@@ -84,6 +142,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 12,
     alignItems: "center",
+
+    // SHADOW STYLING
     shadowColor: Theme.primary,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
@@ -91,7 +151,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   gmailContainer: {
-    // padding: 6,
     paddingVertical: 6,
     marginTop: 16,
     width: "80%",
@@ -100,19 +159,36 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
+    gap: 6,
+
     shadowColor: Theme.primary,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    gap: 6,
   },
+
+  // TYPOGRAPHY
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 24,
     color: Colors.text,
   },
+  errorFull: {
+    color: Colors.error,
+    fontSize: 14,
+    marginTop: 4,
+    flexWrap: "wrap",
+    width: "100%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  // INPUTS
   input: {
     borderWidth: 1,
     borderColor: Theme.primary,
@@ -123,6 +199,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
+
+  // BUTTONS
   button: {
     backgroundColor: Theme.primary,
     paddingVertical: 12,
@@ -131,10 +209,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginTop: 16,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
