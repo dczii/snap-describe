@@ -1,9 +1,16 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function Profile() {
+  const router = useRouter();
+
   return (
     <View>
       <Text style={styles.title}>Profile Page</Text>
+      {/* <Button title="Go to Jane's profile" onPress={() => navigation.navigate("login")} /> */}
+      <TouchableOpacity onPress={() => router.push("/auth/login")}>
+        <Text>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }

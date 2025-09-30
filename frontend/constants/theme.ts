@@ -5,7 +5,7 @@ const Colors = {
   background: "#1A2D42",
   text: "#1A2D42",
   link: "#0069AA",
-  error: "#D81900",
+  error: "#EC6A59",
   placeholder: "rgba(26, 45, 66, 0.6)",
 };
 
