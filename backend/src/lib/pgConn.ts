@@ -12,7 +12,6 @@ if (!connectionString) {
 }
 
 const isProduction = process.env.NODE_ENV === "production";
-const isDevelopment = process.env.NODE_ENV === "development";
 
 const poolConfig: PoolConfig = {
     connectionString,
@@ -28,7 +27,7 @@ const poolConfig: PoolConfig = {
     query_timeout: 20000,
     keepAlive: true,
     keepAliveInitialDelayMillis: 10000,
-    allowExitOnIdle: isDevelopment, 
+    allowExitOnIdle: !isProduction, 
 };
 
 const db = new Pool(poolConfig);
