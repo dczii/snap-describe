@@ -1,42 +1,81 @@
-import {faker} from "@faker-js/faker"
-import bcrypt from "bcrypt"
-import { prisma } from "./lib/prismaConn";
-import logger from "./logger";
+import { faker } from '@faker-js/faker';
+import bcrypt from 'bcrypt';
+import db from './lib/pgConn';
+import logger from './logger';
 
-console.log(process.env.DATABASE_URL);
-const uniqueEmail = new Set(); // storage
-function generateUniqueEmail () {
-    
-    let email: string
-    do {
-        email = faker.internet.email() //generate email
-    } while (uniqueEmail.has(email)) //repeat if already exist
-    uniqueEmail.add(email)
-    return email
+const emailList = new Set();
+function generateUniqueEmail() {
+  let email;
+  do {
+    email = faker.internet.email();
+  } while (emailList.has(email));
+  emailList.add(email);
+  return email;
 }
 
-async function hashPassword (pass: string) {
-    const hashed_Password = await bcrypt.hash(pass, 10);
-    return hashed_Password
+const phoneSet = new Set();
+function generateUniquePHPhoneNumber() {
+  let phone;
+  do {
+    const prefixes = [
+      '917',
+      '918',
+      '919',
+      '922',
+      '923',
+      '924',
+      '925',
+      '926',
+      '927',
+      '928',
+      '929',
+    ];
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const suffix = Math.floor(1000000 + Math.random() * 9000000).toString();
+    phone = `0${prefix}${suffix}`;
+  } while (phoneSet.has(phone));
+
+  phoneSet.add(phone);
+  return phone;
 }
 
-async function main () {
-    await Promise.all(
-        Array.from({length: 10}).map(async () => {
-            await prisma.user.create({
-                data: {
-                    email: generateUniqueEmail(),
-                    display_name: faker.person.fullName(),
-                    password_hash: await hashPassword(faker.internet.password()),
-                    status: Math.random() > 0.5 ? "verified" : "unverified",
-                    phone_number: "09090909090"
-                }
-            })
-        })
-    )
-
+async function hashPassword(password: string) {
+  return bcrypt.hash(password, 10);
 }
 
-main()
-  .then(() => logger.info("Successfully populated database."))
-  .catch((err) => logger.error("Error during seeding:", err))
+function makePlaceholder(rowIndex: number, columnCount: number) {
+  const start = rowIndex * columnCount + 1;
+  return `(${Array.from(
+    { length: columnCount },
+    (_, i) => `$${start + i}`,
+  ).join(',')})`;
+}
+
+async function seedUsers() {
+  const rowCounts = 100;
+  const columnCounts = 4;
+  const values = [];
+  const placeholder = [];
+
+  for (let i = 0; i < rowCounts; i++) {
+    const display_name = faker.person.fullName();
+    const phone_no = generateUniquePHPhoneNumber();
+    const email = generateUniqueEmail();
+    const password_hash = await hashPassword('Tester123!');
+
+    values.push(display_name, phone_no, email, password_hash);
+    placeholder.push(makePlaceholder(i, columnCounts));
+  }
+
+  const query = `
+        INSERT INTO users (display_name, phone_no, email, password_hash) 
+        VALUES ${placeholder.join(',')}
+    `;
+
+  await db.query(query, values);
+  logger.info(`Seeding complete - ${rowCounts} users inserted`);
+}
+
+seedUsers()
+  .catch((err) => logger.error(err))
+  .finally(() => db.end());

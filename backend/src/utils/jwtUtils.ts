@@ -27,3 +27,12 @@ export function stripPayloadClaims(payload: TokenWithClaims): JwtPayload {
         device: payload.device
     }
 }
+
+//helper
+export const generateTokens = (userId: string, deviceHash: string) => {
+    const payload = { userId, device: deviceHash };
+    return {
+        accessToken: createAccessToken(payload),
+        refreshToken: createRefreshToken(payload)
+    };
+};
