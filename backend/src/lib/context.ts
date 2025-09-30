@@ -1,4 +1,4 @@
-import { prisma } from "./prismaConn";
+import db from "./pgConn";
 import { Request, Response } from "express";
 import { verifyAccessToken } from "../utils/jwtUtils";
 import logger from "../logger";
@@ -10,7 +10,7 @@ export async function createContext({req, res}: {req: Request, res: Response}){
     if(!token) { //baka mag lologin palang kaya walang token
         return {
             res,
-            prisma
+            db
         }
     }
 
@@ -24,7 +24,7 @@ export async function createContext({req, res}: {req: Request, res: Response}){
             logger.error("Access token expired:", error.message);
             return {
                 res,
-                prisma,
+                db,
                 isExpired: true,
             }
         }
@@ -32,7 +32,7 @@ export async function createContext({req, res}: {req: Request, res: Response}){
         console.error("An unexpected error occurred while verifying the token:", error);
         return {
             res,
-            prisma,
+            db,
         }
     }
 }

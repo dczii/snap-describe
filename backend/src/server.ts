@@ -1,5 +1,5 @@
 import {ApolloServer} from "@apollo/server";
-import express, {Request, Response, NextFunction} from "express";
+import express, {Request, Response} from "express";
 import http from "http";
 import {ApolloServerPluginDrainHttpServer} from "@apollo/server/plugin/drainHttpServer";
 import {expressMiddleware} from "@as-integrations/express5";
@@ -8,7 +8,7 @@ import { typeDefs } from "./graphql/schema";
 import { resolvers } from "./graphql/resolver";
 import { createContext } from "./lib/context";
 import logger from "./logger";
-import { prisma } from "./lib/prismaConn";
+import db from "./lib/pgConn";
 import { router } from "./routes/router";
 import { localCache } from "./localCache";
 import { jsonSyntaxErrorAndEmptyBodyHandler } from "./middlewares/formatHandler";
@@ -19,8 +19,11 @@ import { traceRequest } from "./middlewares/traceIdGenerator";
 import { ApolloServerPluginLandingPageDisabled } from "@apollo/server/plugin/disabled";
 import { GraphQLError, GraphQLFormattedError } from "graphql";
 import { requireJson } from "./middlewares/graphqlMiddlewares";
+import dotenv from "dotenv";
 
 const isProd = process.env.NODE_ENV === "production";
+if (!isProd) dotenv.config();
+
 const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
@@ -39,7 +42,7 @@ const server = new ApolloServer({
             };
         }
         return {
-            message: "Internal server error",
+            message: "Internal Server Error",
         };
     }
 });
@@ -51,7 +54,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(traceRequest)
+app.use(traceRequest);
 
 //OAS docs via swagger
 if (process.env.NODE_ENV !== "production") {
@@ -121,7 +124,7 @@ const shutdown = async (signal: string, isFatal: boolean) => {
 
         //additional cleanup
         logger.info("Disconnecting from database...");
-        await prisma.$disconnect()  
+        await db.end() 
         logger.info("Database disconnected.");
 
         clearTimeout(shutdownTimeout);

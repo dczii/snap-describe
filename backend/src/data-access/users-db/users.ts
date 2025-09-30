@@ -1,7 +1,8 @@
-import { localCache } from "../localCache";
-import { prisma } from "../lib/prismaConn";
-import logger from "../logger";
+import { localCache } from "../../localCache";
+import db from "../../lib/pgConn";
+import logger from "../../logger";
 import bcrypt from "bcrypt"
+import PREPARED_QUERIES from "./users_preparedQueries";
 
 //temporary type
 interface UserDTO {
@@ -9,17 +10,17 @@ interface UserDTO {
     password_hash: string
 }
 
-export async function getUserByEmail(email: string): Promise<UserDTO | null>{
+interface CreateUserResult {
+    id: string;
+}
+
+export async function getUserByEmailForLogin(email: string): Promise<UserDTO | null>{
     let user = localCache.get(email) as UserDTO | null;
     try {
         if(!user) {
-            user = await prisma.user.findUnique({
-                where: {email},
-                select: {
-                    id: true,
-                    password_hash: true
-                }
-            })
+            const { rows } = await db.query(PREPARED_QUERIES.getUserByEmailForLogin, [email]);
+            user = rows[0] || null
+
             if(!user) return null
             localCache.set(email, user)
         }; 
@@ -31,21 +32,12 @@ export async function getUserByEmail(email: string): Promise<UserDTO | null>{
     }
 }
  
-//no type for now
 export async function createUser(fullname: string, phoneNumber: string, email: string, password: string) {
     try {   
         const hashPassword = await bcrypt.hash(password, 10)
-        const user = await prisma.user.create({
-            data: {
-                display_name: fullname,
-                email,
-                phone_number: phoneNumber,
-                password_hash: hashPassword,
-            },
-            select: {
-                id: true,
-            }
-        });
+        const result = await db.query(PREPARED_QUERIES.createUser, [fullname, phoneNumber, email, hashPassword]);
+        
+        const user: CreateUserResult | null = result.rows[0] ?? null 
 
         return user
     } catch (err) {
