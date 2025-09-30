@@ -1,0 +1,31 @@
+generator client {
+  provider         = "prisma-client-js"
+  connection_limit = "5"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String   @unique
+  display_name  String
+  password_hash String
+  status        String   @default("unverified")
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  phone_number  String   @unique
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_profile {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name    String?
+  middle_name   String?
+  last_name     String?
+  date_of_birth DateTime? @db.Date
+  gender        String?
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+}

@@ -7,7 +7,6 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import TabIcon from "@/components/cards/TabIcon";
-import addProduct from "./addProduct";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -56,9 +55,7 @@ export default function TabLayout() {
           name={name}
           options={{
             title,
-            tabBarIcon: ({ focused }) => (
-              <TabIcon source={icon} focused={focused} />
-            ),
+            tabBarIcon: ({ focused }) => <TabIcon source={icon} focused={focused} />,
           }}
         />
       ))}

@@ -39,6 +39,7 @@ export default function SearchBar({
 }
 
 const styles = StyleSheet.create({
+  // LAYOUT
   wrapper: {
     marginHorizontal: 16,
     marginVertical: 8,
@@ -59,12 +60,16 @@ const styles = StyleSheet.create({
       android: { elevation: 6 },
     }),
   },
+
+  // INPUTS
   input: {
     flex: 1,
     color: Colors.text,
     fontSize: 16,
     fontStyle: "italic",
   },
+
+  // ACTIONS
   iconBtn: {
     height: 38,
     width: 38,

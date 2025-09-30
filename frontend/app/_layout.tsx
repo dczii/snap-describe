@@ -1,15 +1,11 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-// import "react-native-reanimated";
-
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useState } from "react";
+import React from "react";
+import { Theme } from "@/constants/theme";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -24,18 +20,22 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider
-      value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
-    >
+    <ThemeProvider value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
         {isSignedIn ? (
-          <Stack.Screen name="(tabs)" />
+          <>
+            {/* <Stack.Screen name="(tabs)" />
+            <Stack.Screen
+              name="ProductPage"
+              options={{ animation: "slide_from_bottom" }}
+            /> */}
+          </>
         ) : (
-          <Stack.Screen name="auth/login" />
+          <Stack.Screen name='auth/login' />
         )}
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen name='+not-found' />
       </Stack>
-      <StatusBar style="light" />
+      <StatusBar style='light' />
     </ThemeProvider>
   );
 }
@@ -44,7 +44,7 @@ const CustomDefaultTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: "#1A2D42",
+    background: Theme.background,
   },
 };
 
@@ -52,6 +52,6 @@ const CustomDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: "#1A2D42",
+    background: Theme.primary,
   },
 };

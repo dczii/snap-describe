@@ -9,41 +9,104 @@ import {
 import { useRouter } from "expo-router";
 import { Theme, Colors, Gradients } from "@/constants/theme";
 import { LinearGradient } from "expo-linear-gradient";
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+type FormProps = {
+  email?: string;
+  password?: string;
+};
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
+});
 
 export default function Login() {
   const router = useRouter();
+
+  const handleLogin = async (values: FormProps) => {
+    try {
+      const { email = "", password = "" } = values;
+      const response = await fetch(
+        "https://snap-describe-production.up.railway.app/v1/auth/mobile/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login Successfully");
+        router.replace("/(tabs)");
+      } else {
+        const message =
+          data.message !== "Incorrect email or password."
+            ? "Login failed"
+            : data.message;
+        alert(message);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
         <Text style={styles.title}>Login Page</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email or Phone"
-          placeholderTextColor={Theme.text}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor={Theme.text}
-          secureTextEntry
-        />
-
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => router.replace("/(tabs)")}
-          style={{ width: "100%", marginTop: 16 }}
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => handleLogin(values)}
         >
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={Gradients.gradientButton}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          {({ handleChange, handleSubmit, errors, values }) => (
+            <View style={styles.container}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email or Phone"
+                placeholderTextColor={Theme.text}
+                value={values.email}
+                onChangeText={handleChange("email")}
+              />
+              {errors.email && (
+                <Text style={styles.errorFull}>{errors.email}</Text>
+              )}
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor={Theme.text}
+                secureTextEntry
+                value={values.password}
+                onChangeText={handleChange("password")}
+              />
+              {errors.email && (
+                <Text style={styles.errorFull}>{errors.password}</Text>
+              )}
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={(e) => handleSubmit()}
+                style={{ width: "100%", marginTop: 16 }}
+              >
+                <LinearGradient
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  colors={Gradients.gradientButton}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>LOGIN</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Formik>
 
         <View>
           <Text style={{ marginTop: 16, color: Theme.text }}>or</Text>
@@ -72,6 +135,7 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  // CONTAINERS
   wrapper: {
     flex: 1,
     justifyContent: "center",
@@ -79,11 +143,14 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.primary,
   },
   container: {
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 32,
     width: "80%",
     backgroundColor: "white",
     borderRadius: 12,
     alignItems: "center",
+
+    // SHADOW STYLING
     shadowColor: Theme.primary,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
@@ -91,7 +158,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   gmailContainer: {
-    // padding: 6,
     paddingVertical: 6,
     marginTop: 16,
     width: "80%",
@@ -100,19 +166,36 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
+    gap: 6,
+
     shadowColor: Theme.primary,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    gap: 6,
   },
+
+  // TYPOGRAPHY
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 24,
     color: Colors.text,
   },
+  errorFull: {
+    color: Colors.error,
+    fontSize: 14,
+    marginTop: 4,
+    flexWrap: "wrap",
+    width: "100%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  // INPUTS
   input: {
     borderWidth: 1,
     borderColor: Theme.primary,
@@ -123,6 +206,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
+
+  // BUTTONS
   button: {
     backgroundColor: Theme.primary,
     paddingVertical: 12,
@@ -131,10 +216,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginTop: 16,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
