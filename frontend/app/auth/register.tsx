@@ -32,8 +32,9 @@ const validationSchema = Yup.object().shape({
     .required("Confirm your password"),
 });
 
+const apiURL = process.env.EXPO_PUBLIC_API_URL;
+
 export default function Register() {
-  alert("hit");
   const handleRegister = async (values: FormProps) => {
     try {
       const {
@@ -43,22 +44,19 @@ export default function Register() {
         password = "",
         confirmPassword = "",
       } = values;
-      const response = await fetch(
-        "https://dfmfbsxq-4000.asse.devtunnels.ms/v1/auth/mobile/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fullname,
-            phoneNumber,
-            email,
-            password,
-            confirmPassword,
-          }),
-        }
-      );
+      const response = await fetch(`${apiURL}/v1/auth/mobile/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullname,
+          phoneNumber,
+          email,
+          password,
+          confirmPassword,
+        }),
+      });
 
       const data = await response.json();
 

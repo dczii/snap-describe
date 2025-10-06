@@ -22,22 +22,21 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
 });
 
+const apiURL = process.env.EXPO_PUBLIC_API_URL;
+
 export default function Login() {
   const router = useRouter();
 
   const handleLogin = async (values: FormProps) => {
     try {
       const { email = "", password = "" } = values;
-      const response = await fetch(
-        "https://dfmfbsxq-4000.asse.devtunnels.ms/v1/auth/mobile/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${apiURL}/v1/auth/mobile/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
 
