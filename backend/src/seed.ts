@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
-import db from './lib/pgConn';
+import db from '../configs/dbConfig';
 import logger from './logger';
 
 const emailList = new Set();

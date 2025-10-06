@@ -135,6 +135,18 @@ paths:
                   value:
                     code: "INVALID_CREDENTIALS"
                     message: "Invalid format."
+        '409':
+          description: Conflict. Happen when creating a existing user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+              examples:
+                userAlreadyExistExample:
+                  summary: User already exist
+                  value:
+                    code: "ALREADY_EXIST"
+                    message: "User already exist"
         '429':
           description: Too many requests
           content:

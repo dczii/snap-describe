@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { JwtPayload, TokenWithClaims } from '../types/jwtTypes';
-const JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET
-const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET
+import { env } from '../../configs/env';
+const JWT_ACCESS_TOKEN_SECRET = env.accessToken
+const JWT_REFRESH_TOKEN_SECRET = env.refreshToken
 
 
 //Access token
