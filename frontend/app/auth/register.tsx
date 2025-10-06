@@ -33,6 +33,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function Register() {
+  alert("hit");
   const handleRegister = async (values: FormProps) => {
     try {
       const {
@@ -43,7 +44,7 @@ export default function Register() {
         confirmPassword = "",
       } = values;
       const response = await fetch(
-        "https://snap-describe-production.up.railway.app/v1/auth/mobile/register",
+        "https://dfmfbsxq-4000.asse.devtunnels.ms/v1/auth/mobile/register",
         {
           method: "POST",
           headers: {
@@ -73,6 +74,8 @@ export default function Register() {
       }
     } catch (error) {
       alert(error);
+    } finally {
+      alert("Registered successfully");
     }
   };
 
@@ -174,7 +177,7 @@ export default function Register() {
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleSubmit}
+              onPress={() => handleSubmit()}
             >
               <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>

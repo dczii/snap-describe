@@ -1,21 +1,18 @@
-import ImageContainer from "@/components/cards/ImageContainer";
-import { Colors, Theme } from "@/constants/theme";
+import ImageContainer from "@/components/home/ImageContainer";
+import { Colors } from "@/constants/theme";
 import {
   View,
   StyleSheet,
   FlatList,
   Text,
   TouchableOpacity,
-  ScrollView,
-  Image,
 } from "react-native";
-import SearchBar from "@/components/cards/SearchBar";
+import SearchBar from "@/components/home/SearchBar";
 import React, { useState, useMemo } from "react";
-import CategoryChips from "@/components/cards/Category";
-import BannerCarousel from "@/components/cards/Banner";
-import Ratings from "@/components/cards/Ratings";
+import CategoryChips from "@/components/home/Category";
+import BannerCarousel from "@/components/home/Banner";
+import Ratings from "@/components/home/Ratings";
 import { useRouter } from "expo-router";
-import ProductPage from "@/components/cards/ProductPage";
 
 const CATEGORIES = [
   "Likes",
@@ -120,8 +117,11 @@ export default function Home() {
   }, [query, category, products]);
 
   // NAVIGATION HANDLER
-  const handleProductPress = (product: any) => {
-    setSelectedProduct(product);
+  const handleProductPress = (product: string) => {
+    router.push({
+      pathname: "/productPage",
+      params: { product: JSON.stringify(product) },
+    });
   };
 
   const renderItem = ({ item }: any) => (
@@ -133,34 +133,24 @@ export default function Home() {
           height={100}
           borderRadius={10}
         />
+
+        <Text style={Styles.title} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={Styles.price}>₱{item.price}</Text>
+
+        <View style={Styles.between}>
+          <Text style={Styles.location}>{item.location}</Text>
+          <Ratings value={item.rating} />
+        </View>
       </TouchableOpacity>
-
-      <Text style={Styles.title} numberOfLines={1}>
-        {item.title}
-      </Text>
-      <Text style={Styles.price}>₱{item.price}</Text>
-
-      <View style={Styles.between}>
-        <Text style={Styles.location}>{item.location}</Text>
-        <Ratings value={item.rating} />
-      </View>
     </View>
   );
-
-  // PRODUCT DETAIL PAGE
-  if (selectedProduct) {
-    return (
-      <ProductPage
-        product={selectedProduct}
-        onBack={() => setSelectedProduct(null)}
-      />
-    );
-  }
 
   // PRODUCT LIST PAGE
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ marginTop: 64 }}>
+      <View style={{ marginTop: 32 }}>
         <SearchBar
           value={query}
           onChangeText={setQuery}

@@ -6,7 +6,7 @@ import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import TabIcon from "@/components/cards/TabIcon";
+import TabIcon from "@/components/home/TabIcon";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -37,8 +37,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "dark"].tint,
         headerShown: false,
+        tabBarActiveTintColor: Colors[colorScheme ?? "dark"].tint,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -55,7 +55,9 @@ export default function TabLayout() {
           name={name}
           options={{
             title,
-            tabBarIcon: ({ focused }) => <TabIcon source={icon} focused={focused} />,
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source={icon} focused={focused} />
+            ),
           }}
         />
       ))}
