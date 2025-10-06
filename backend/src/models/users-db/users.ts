@@ -1,5 +1,5 @@
 import { localCache } from "../../localCache";
-import db from "../../lib/pgConn";
+import db from "../../../configs/dbConfig";
 import logger from "../../logger";
 import bcrypt from "bcrypt"
 import PREPARED_QUERIES from "./users_preparedQueries";
@@ -43,6 +43,6 @@ export async function createUser(fullname: string, phoneNumber: string, email: s
     } catch (err) {
         //temporary error handler
         logger.error("Database Error: ", err)
-        return null
+        throw new Error('DatabaseError')
     }
 }

@@ -1,4 +1,4 @@
-import db from "./pgConn";
+import db from "../../configs/dbConfig";
 import { Request, Response } from "express";
 import { verifyAccessToken } from "../utils/jwtUtils";
 import logger from "../logger";

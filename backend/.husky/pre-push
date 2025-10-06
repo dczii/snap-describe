@@ -1,0 +1,13 @@
+  #!/bin/sh
+  . "$(dirname "$0")/_/husky.sh"
+
+  echo "Running tests before push..."
+  npm run test
+
+  if [ $? -ne 0 ]; then
+    echo "Tests failed. Aborting push."
+    exit 1
+  fi
+
+  echo "Tests passed. Proceeding with push."
+  exit 0

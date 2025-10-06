@@ -4,9 +4,9 @@ import { isPhNum, isValidEmail, isValidPassword } from '../utils/validators';
 import {
   createUser,
   getUserByEmailForLogin,
-} from '../data-access/users-db/users';
+} from '../models/users-db/users';
 import bcrypt from 'bcrypt';
-import db from '../lib/pgConn';
+import db from '../../configs/dbConfig';
 import logger from '../logger';
 import { localCache } from '../localCache';
 

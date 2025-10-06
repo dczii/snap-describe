@@ -1,40 +1,28 @@
 import { ApolloServer } from '@apollo/server';
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import http from 'http';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { expressMiddleware } from '@as-integrations/express5';
-import cors from 'cors';
-import { typeDefs } from './graphql/schema';
-import { resolvers } from './graphql/resolver';
-import { createContext } from './lib/context';
-import logger from './logger';
-import db from './lib/pgConn';
-import { router } from './routes/router';
-import { localCache } from './localCache';
-import { jsonSyntaxErrorAndEmptyBodyHandler } from './middlewares/formatHandler';
-import { swaggerSpec } from './swagger';
-import swaggerUi from 'swagger-ui-express';
-import { authRouter } from './routes/authRouter';
-import { traceRequest } from './middlewares/traceIdGenerator';
+import { typeDefs } from '../graphql/schema';
+import { resolvers } from '../graphql/resolver';
+import { createContext } from '../lib/context';
+import logger from '../logger';
+import db from '../../configs/dbConfig';
+import { localCache } from '../localCache';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { requireJson } from './middlewares/graphqlMiddlewares';
-import dotenv from 'dotenv';
+import app from './app';
+import { env } from '../../configs/env';
 
-const isProd = process.env.NODE_ENV === 'production';
-if (!isProd) dotenv.config();
-
-const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
-    ...(isProd ? [ApolloServerPluginLandingPageDisabled()] : []),
+    ...(env.isProd ? [ApolloServerPluginLandingPageDisabled()] : []),
   ],
-  introspection: !isProd,
-  //simple error format for now
+  introspection: !env.isProd,
   formatError: (
     formatError: GraphQLFormattedError,
     error: unknown,
@@ -53,34 +41,8 @@ const server = new ApolloServer({
   },
 });
 
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  }),
-);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(traceRequest);
-
-//OAS docs via swagger
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-}
-
-//routes
-app.use('/api', router);
-app.use('/v1/auth', authRouter);
-
-//error handlers
-app.use(jsonSyntaxErrorAndEmptyBodyHandler);
-
-//graphql shields
-app.use(requireJson); //every request must be application/json
-
 //start server
-const port = process.env.PORT || 4000; // put in env later
+const port = env.port
 async function startServer() {
   await server.start();
   app.use(
@@ -152,7 +114,7 @@ const shutdown = async (signal: string, isFatal: boolean) => {
     }
   } catch (error) {
     clearTimeout(shutdownTimeout);
-    logger.debug('Error during shutdown:', error);
+    logger.error('Error during shutdown:', error);
     process.exit(1);
   }
 };

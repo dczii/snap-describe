@@ -3,32 +3,8 @@ import { hashClientDevice, getClientIp } from '../utils/authUtils';
 import logger from '../logger';
 import { login, register } from '../services/authServices';
 import { TraceRequest } from '../middlewares/traceIdGenerator';
+import { ERROR_RESPONSES, ErrorType } from '../../configs/apiResponses';
 
-//readonly objects
-const ERROR_RESPONSES = {
-  RateLimitError: {
-    status: 429,
-    code: 'RATE_LIMIT',
-    message: 'Too many requests',
-  },
-  InvalidCredentialsError: {
-    status: 400,
-    code: 'INVALID_CREDENTIALS',
-    message: 'Incorrect email or password',
-  },
-  AlreadyExist: {
-    status: 409,
-    code: 'ALREADY_EXISTS',
-    message: 'User already exists',
-  },
-  DatabaseError: {
-    status: 500,
-    code: 'DATABASE_ERROR',
-    message: 'Database operation failed',
-  },
-} as const;
-
-type ErrorType = keyof typeof ERROR_RESPONSES;
 
 export const authController = {
   login: async (req: Request, res: Response) => {
