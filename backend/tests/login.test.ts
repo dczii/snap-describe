@@ -1,12 +1,23 @@
 import supertest from "supertest";
 import app from "../src/server/app";
 
+const loginMocks = {
+    validUser: {
+        email: "Tester01@gmail.com",
+        password: "Tester123!"
+    },
+
+    invalidUser: {
+        email: "WrongEmail@gmail.com",
+        password: "WrongPassword"
+    }
+} as const
 
 describe("Login test", () => {
     it("should log in successfully with valid credentials", async () => {
         const res = await supertest(app)
             .post("/v1/auth/mobile/login")
-            .send({email: "Tester01@gmail.com", password: "Tester123!"});
+            .send(loginMocks.validUser);
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Login successful");
         expect(res.body).toHaveProperty("accessToken");
@@ -17,7 +28,7 @@ describe("Login test", () => {
     it("should return 400 when user input is incorrect or invalid", async () => {
         const res = await supertest(app)
             .post("/v1/auth/mobile/login")
-            .send({email: "WrongEmail@gmail.com", password: "WrongPassword"});
+            .send(loginMocks.invalidUser);
         expect(res.status).toBe(400)
         expect(res.body).toHaveProperty("code");
         expect(res.body).toHaveProperty("message");
@@ -25,13 +36,10 @@ describe("Login test", () => {
     });
 
     it("should return 429 Too Many Request when request limit exceeded", async () => {
-        const email = "Tester01@gmail.com";
-        const password = "Tester123!";
-
         const requests = Array.from({length: 1000}, () => 
             supertest(app)
                 .post("/v1/auth/mobile/login")
-                .send({email, password})
+                .send(loginMocks.validUser)
         );
 
         const results = await Promise.all(requests);
