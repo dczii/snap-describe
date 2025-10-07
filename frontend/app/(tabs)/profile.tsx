@@ -7,9 +7,8 @@ export default function Profile() {
   return (
     <View>
       <Text style={styles.title}>Profile Page</Text>
-      {/* <Button title="Go to Jane's profile" onPress={() => navigation.navigate("login")} /> */}
       <TouchableOpacity onPress={() => router.push("/auth/login")}>
-        <Text>Login</Text>
+        <Text style={{ color: "white" }}>Logout</Text>
       </TouchableOpacity>
     </View>
   );

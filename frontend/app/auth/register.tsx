@@ -32,6 +32,8 @@ const validationSchema = Yup.object().shape({
     .required("Confirm your password"),
 });
 
+const apiURL = process.env.EXPO_PUBLIC_API_URL;
+
 export default function Register() {
   const handleRegister = async (values: FormProps) => {
     try {
@@ -42,22 +44,19 @@ export default function Register() {
         password = "",
         confirmPassword = "",
       } = values;
-      const response = await fetch(
-        "https://snap-describe-production.up.railway.app/v1/auth/mobile/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fullname,
-            phoneNumber,
-            email,
-            password,
-            confirmPassword,
-          }),
-        }
-      );
+      const response = await fetch(`${apiURL}/v1/auth/mobile/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullname,
+          phoneNumber,
+          email,
+          password,
+          confirmPassword,
+        }),
+      });
 
       const data = await response.json();
 
@@ -73,6 +72,8 @@ export default function Register() {
       }
     } catch (error) {
       alert(error);
+    } finally {
+      alert("Registered successfully");
     }
   };
 
@@ -174,7 +175,7 @@ export default function Register() {
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleSubmit}
+              onPress={() => handleSubmit()}
             >
               <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>

@@ -22,22 +22,21 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
 });
 
+const apiURL = process.env.EXPO_PUBLIC_API_URL;
+
 export default function Login() {
   const router = useRouter();
 
   const handleLogin = async (values: FormProps) => {
     try {
       const { email = "", password = "" } = values;
-      const response = await fetch(
-        "https://snap-describe-production.up.railway.app/v1/auth/mobile/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${apiURL}/v1/auth/mobile/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
 
@@ -59,7 +58,10 @@ export default function Login() {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <Text style={styles.title}>Login Page</Text>
+        <Image
+          source={require("../../assets/logos/thrift-logo.png")}
+          style={styles.logo}
+        />
 
         <Formik
           initialValues={{ email: "", password: "" }}
@@ -67,7 +69,7 @@ export default function Login() {
           onSubmit={(values) => handleLogin(values)}
         >
           {({ handleChange, handleSubmit, errors, values }) => (
-            <View style={styles.container}>
+            <View style={styles.insideContainer}>
               <TextInput
                 style={styles.input}
                 placeholder="Email or Phone"
@@ -141,11 +143,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Theme.primary,
+    paddingHorizontal: 32,
   },
   container: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 40,
     paddingVertical: 32,
-    width: "80%",
+    width: "100%",
     backgroundColor: "white",
     borderRadius: 12,
     alignItems: "center",
@@ -156,6 +159,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
+  },
+  insideContainer: {
+    width: "100%",
+    alignItems: "center",
   },
   gmailContainer: {
     paddingVertical: 6,
@@ -175,13 +182,15 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  // TYPOGRAPHY
-  title: {
+  // LOGO
+  logo: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 24,
     color: Colors.text,
   },
+
+  // TYPOGRAPHY
   errorFull: {
     color: Colors.error,
     fontSize: 14,
