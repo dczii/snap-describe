@@ -1,5 +1,6 @@
 import { userQueries } from "./query/user.query";
 import { userMutations } from "./mutation/user.mutation";
+import { listingMutations } from "./mutation/listing.mutation";
 
 
 export const resolvers = {
@@ -8,5 +9,6 @@ export const resolvers = {
     },
     Mutation: {
         ...userMutations.Mutation,
+        ...listingMutations.Mutation
     }
 };

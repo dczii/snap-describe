@@ -1,23 +1,23 @@
 import db from "../../configs/dbConfig";
 import { Request, Response } from "express";
-import { verifyAccessToken } from "../utils/jwtUtils";
 import logger from "../logger";
+import { authContext } from "../services/authServices";
+import { Pool } from "pg";
 
-export async function createContext({req, res}: {req: Request, res: Response}){
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.split(" ")[1]; // Bearer format only
-    
-    if(!token) { //baka mag lologin palang kaya walang token
-        return {
-            res,
-            db
-        }
-    }
+export interface GraphQLContext {
+    userId?: string | null,
+    deviceHash?: string | null,
+    res: Response,
+    db: Pool,
+    isExpired?: boolean 
+}
+export async function createContext({req, res}: {req: Request, res: Response}): Promise<GraphQLContext>{
+    const authHeader = req.headers.authorization || "";
 
     try {
-        const decodedPayload = verifyAccessToken(token);
         return {
-            userId: decodedPayload, // note: lagyan ng id wala pa kasing types eh.
+            res,
+            ...authContext(authHeader) 
         }
     } catch (error: unknown) {
         if(error instanceof Error && error.name === "TokenExpiredError") {
