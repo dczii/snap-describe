@@ -8,6 +8,7 @@ import { authRouter } from '../routes/authRouter';
 import { traceRequest } from '../middlewares/traceIdGenerator';
 import { requireJson } from '../middlewares/graphqlMiddlewares';
 import { env } from '../../configs/env';
+import { uploadRouter } from '../routes/uploadRouter';
 
 const app = express();
 app.use(
@@ -28,6 +29,7 @@ if (!env.isProd) {
 
 //routes
 app.use('/api', router);
+app.use('/api', uploadRouter)
 app.use('/v1/auth', authRouter);
 
 //error handlers

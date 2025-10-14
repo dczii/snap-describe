@@ -4,7 +4,7 @@ import { isPhNum, isValidEmail, isValidPassword } from '../utils/validators';
 import {
   createUser,
   getUserByEmailForLogin,
-} from '../models/users-db/users';
+} from '../database/public.users/userQueries';
 import bcrypt from 'bcrypt';
 import db from '../../configs/dbConfig';
 import logger from '../logger';
@@ -22,31 +22,26 @@ const RATE_LIMITS = {
   SWL_WINDOW: 60,
 } as const;
 
-//authContext for graphql
-export const authContext = (authHeader: string) => {
+//authContext 
+export const authContext = (authHeader: string | undefined) => {
   const token = authHeader?.split(' ')[1];
+  logger.info("Token: ",token);
 
   if (!token) {
     return {
       db,
+      userId: null,
+      deviceHash: null
     };
   }
 
-  try {
-    const decodedToken = verifyAccessToken(token);
-    return {
-      db,
-      userId: decodedToken.userId ?? null,
-      deviceHash: decodedToken.device ?? null,
-    };
-  } catch (err: unknown) {
-    if (err instanceof Error && err.name === 'TokenExpiredError') {
-      throw err;
-    }
-
-    //fallback
-    throw err;
-  }
+  const decodedToken = verifyAccessToken(token);
+  logger.info(decodedToken.userId)
+  return {
+    db,
+    userId: decodedToken.userId ?? null,
+    deviceHash: decodedToken.device ?? null,
+  };
 };
 
 //login for mobile

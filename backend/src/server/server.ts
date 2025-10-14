@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 import http from 'http';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { expressMiddleware } from '@as-integrations/express5';
-import { typeDefs } from '../graphql/schema';
-import { resolvers } from '../graphql/resolver';
+import { typeDefs } from '../graphql/schema/index';
+import { resolvers } from '../graphql/resolver/index';
 import { createContext } from '../lib/context';
 import logger from '../logger';
 import db from '../../configs/dbConfig';
@@ -23,22 +23,22 @@ const server = new ApolloServer({
     ...(env.isProd ? [ApolloServerPluginLandingPageDisabled()] : []),
   ],
   introspection: !env.isProd,
-  formatError: (
-    formatError: GraphQLFormattedError,
-    error: unknown,
-  ): GraphQLFormattedError => {
-    if (
-      error instanceof GraphQLError &&
-      typeof error.extensions?.code === 'string'
-    ) {
-      return {
-        message: error.extensions.code,
-      };
-    }
-    return {
-      message: 'Internal Server Error',
-    };
-  },
+  // formatError: (
+  //   formatError: GraphQLFormattedError,
+  //   error: unknown,
+  // ): GraphQLFormattedError => {
+  //   if (
+  //     error instanceof GraphQLError &&
+  //     typeof error.extensions?.code === 'string'
+  //   ) {
+  //     return {
+  //       message: error.extensions.code,
+  //     };
+  //   }
+  //   return {
+  //     message: 'Internal Server Error',
+  //   };
+  // },
 });
 
 //start server
