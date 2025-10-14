@@ -1,19 +1,21 @@
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { Theme } from "@/constants/theme";
+import ProductInfo from "@/components/add-product/ProductInfo";
+import UploadImage from "@/components/add-product/UploadProduct";
 
-export default function addProduct() {
+export default function ProductPage() {
   return (
-    <View>
-      <Text style={styles.title}>Add Product Page</Text>
+    <View style={styles.mainContainer}>
+      <UploadImage />
+      {/* <ProductInfo /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 24,
-    color: "white",
-    padding: 32,
+  mainContainer: {
+    flex: 1,
+    backgroundColor: Theme.primary,
   },
 });
