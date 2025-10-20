@@ -72,8 +72,6 @@ export default function Register() {
       }
     } catch (error) {
       alert(error);
-    } finally {
-      alert("Registered successfully");
     }
   };
 
@@ -93,6 +91,8 @@ export default function Register() {
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => handleRegister(values)}
+        validateOnChange={false}
+        validateOnBlur={false}
       >
         {({ handleChange, handleSubmit, errors, values }) => (
           <LinearGradient

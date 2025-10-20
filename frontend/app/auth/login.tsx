@@ -58,15 +58,17 @@ export default function Login() {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
+        {/* SNAP LOGO */}
         <Image
           source={require("../../assets/logos/thrift-logo.png")}
           style={styles.logo}
         />
-
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validationSchema}
           onSubmit={(values) => handleLogin(values)}
+          validateOnChange={false}
+          validateOnBlur={false}
         >
           {({ handleChange, handleSubmit, errors, values }) => (
             <View style={styles.insideContainer}>
@@ -184,10 +186,10 @@ const styles = StyleSheet.create({
 
   // LOGO
   logo: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 24,
-    color: Colors.text,
+    width: 120,
+    height: 120,
+    resizeMode: "contain",
+    marginBottom: 32,
   },
 
   // TYPOGRAPHY
