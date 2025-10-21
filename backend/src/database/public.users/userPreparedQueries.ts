@@ -1,4 +1,4 @@
-export const USER_PREPARED_QUERIES = {
+export const USER_PREPARED_STATEMENTS = {
   createUser: {
     name: 'create_user',
     text: `
@@ -20,6 +20,13 @@ export const USER_PREPARED_QUERIES = {
             SELECT id, password_hash FROM users WHERE email = $1
         `,
   },
+
+  getSellerById: {
+    name: 'get_seller_by_id',
+    text: `
+      SELECT id FROM sellers WHERE id = $1;
+    `,
+  },
 } as const;
 
-export default USER_PREPARED_QUERIES;
+export default USER_PREPARED_STATEMENTS;

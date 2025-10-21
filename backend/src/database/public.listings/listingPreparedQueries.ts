@@ -1,4 +1,4 @@
-const LISTING_PREPARED_QUERIES = {
+const LISTING_PREPARED_STATEMENTS = {
     createListing: {
         name: "create_listing",
         text: `
@@ -15,4 +15,4 @@ const LISTING_PREPARED_QUERIES = {
     }
 }
 
-export default LISTING_PREPARED_QUERIES
+export default LISTING_PREPARED_STATEMENTS;

@@ -12,6 +12,7 @@ import {
   ListingPhotos,
 } from '../database/public.listings/listingQueries';
 import db from '../../configs/dbConfig';
+import { getSellerById } from '../database/public.users/userQueries';
 
 export const uploadProductListing = async (data: {
   userId: string | null | undefined;
@@ -42,6 +43,15 @@ export const uploadProductListing = async (data: {
         extensions: {
           code: 'UNAUTHORIZED',
         },
+      });
+    }
+
+    const sellerExist = getSellerById(userId);
+    if (!sellerExist) {
+      throw new GraphQLError('Forbidden', {
+        extensions: {
+          code: 'FORBIDDEN'
+        }
       });
     }
 

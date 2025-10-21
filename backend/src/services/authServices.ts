@@ -3,23 +3,28 @@ import { isWithinSlidingWindowLog } from '../utils/cacheUtils';
 import { isPhNum, isValidEmail, isValidPassword } from '../utils/validators';
 import {
   createUser,
+  getSellerById,
   getUserByEmailForLogin,
 } from '../database/public.users/userQueries';
 import bcrypt from 'bcrypt';
 import db from '../../configs/dbConfig';
 import logger from '../logger';
 import { localCache } from '../localCache';
+import { ImageDTO } from '../controllers/uploadController';
+import supabase from '../../configs/supabaseConfig';
+import { env } from '../../configs/env';
 
 const RATE_LIMITS = {
   GLOBAL_LOGIN_LIMIT: 100,
-  GLOBAL_LOGIN_WINDOW: 60,
   GLOBAL_REGISTER_LIMIT: 50,
-  GLOBAL_REGISTER_WINDOW: 60,
+  GLOBAL_SIGNED_URL_LIMIT: 30,
+  GLOBAL_WINDOW: 60,
   SWL_IP_LIMIT: 20,
   SWL_DEVICE_LIMIT: 10,
   SWL_PHONE_NUM_LIMIT: 5,
   SWL_EMAIL_LIMIT: 5,
   SWL_WINDOW: 60,
+  SWL_USER_LIMIT: 5
 } as const;
 
 //authContext 
@@ -40,7 +45,7 @@ export const authContext = (authHeader: string | undefined) => {
   return {
     db,
     userId: decodedToken.userId ?? null,
-    deviceHash: decodedToken.device ?? null,
+    deviceHash: decodedToken.deviceHash ?? null,
   };
 };
 
@@ -77,7 +82,7 @@ export const login = async (
     !isWithinSlidingWindowLog(
       globalKey,
       RATE_LIMITS.GLOBAL_LOGIN_LIMIT,
-      RATE_LIMITS.GLOBAL_LOGIN_WINDOW,
+      RATE_LIMITS.GLOBAL_WINDOW,
     )
   )
     throw new Error('RateLimitError');
@@ -145,7 +150,7 @@ export const register = async (
     !isWithinSlidingWindowLog(
       globalKey,
       RATE_LIMITS.GLOBAL_REGISTER_LIMIT,
-      RATE_LIMITS.GLOBAL_REGISTER_WINDOW,
+      RATE_LIMITS.GLOBAL_WINDOW,
     )
   )
     throw new Error('RateLimitError');
@@ -183,4 +188,65 @@ export const register = async (
 
   //return tokens
   return generateTokens(newUser.id, deviceHash);
-};
+};  
+
+export const signedUrl = async (ip: string, deviceHash: string, userId: string | null | undefined, images: ImageDTO[]) => {
+  const globalKey = `swl:uploadUrl:global`;
+  const ipKey = `swl:uploadUrl:ip:${ip}`;
+  const userKey = `swl:uploadUrl:email:${userId}`;
+  const deviceKey = `swl:uploadUrl:device:${deviceHash}`;
+
+  if(!isWithinSlidingWindowLog(userKey, RATE_LIMITS.SWL_USER_LIMIT, RATE_LIMITS.SWL_WINDOW)) {
+    throw new Error('RateLimitError');
+  };
+  if(!isWithinSlidingWindowLog(deviceKey, RATE_LIMITS.SWL_DEVICE_LIMIT, RATE_LIMITS.SWL_WINDOW)) {
+    throw new Error('RateLimitError');
+  };
+  if (!isWithinSlidingWindowLog(ipKey, RATE_LIMITS.SWL_IP_LIMIT, RATE_LIMITS.SWL_WINDOW)) {
+    throw new Error('RateLimitError');
+  };
+  if (!isWithinSlidingWindowLog(globalKey, RATE_LIMITS.GLOBAL_SIGNED_URL_LIMIT, RATE_LIMITS.GLOBAL_SIGNED_URL_LIMIT)) {
+    throw new Error('RateLimitError');
+  };
+
+  logger.info(`IMAGE: ${images.length}`)
+  if (images.length === 0 || !userId) {
+    throw new Error('InvalidCredentialsError');
+  };
+
+  const userExist = await getSellerById(userId)
+
+  if (!userExist) {
+    throw new Error('UserNotFound');
+  }
+  
+  const allowed = ['image/jpeg', 'image/png'];
+  const notValidImage = images.some((img) => !allowed.includes(img.mimeType));
+
+  if (notValidImage) {
+    throw new Error('InvalidCredentialsError');
+  }
+
+  const filePaths = images.map(
+    img => `temp/${userId}/${Date.now()}_${img.fileName}`
+  );
+
+  const uploadUrls = await Promise.all(
+    filePaths.map( async (filePath) => {
+      const {data, error} = await supabase.storage
+        .from(env.supabaseBucket)
+        .createSignedUploadUrl(filePath, {upsert: false});
+
+      if (error || !data) {
+        throw new Error("SupabaseStorageError")
+      }
+
+      return {
+        signedUrl: data.signedUrl,
+        filePath: data.path
+      }
+    })
+  );
+
+  return uploadUrls
+}

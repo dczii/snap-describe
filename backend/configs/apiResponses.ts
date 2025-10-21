@@ -18,9 +18,19 @@ export const ERROR_RESPONSES = {
   },
   DatabaseError: {
     status: 500,
-    code: 'DATABASE_ERROR',
-    message: 'Database operation failed',
+    code: 'INTERNAL_ERROR',
+    message: 'Internal server error.',
   },
+  SupabaseStorageError: {
+    status: 500,
+    code: 'INTERNAL_ERROR',
+    message: 'Internal server error.',
+  },
+  UnexpectedError: {
+    status: 500,
+    code: 'INTERNAL_ERROR',
+    message: 'Internal server error'
+  }
 } as const;
 
 

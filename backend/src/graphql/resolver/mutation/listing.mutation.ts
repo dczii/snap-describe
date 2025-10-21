@@ -32,7 +32,7 @@ export const listingMutations = {
 
         throw new GraphQLError("Unexpected error occurred", {
           extensions: {
-            code: "UNKNOWN_ERROR"
+            code: "UNEXPECTED_ERROR"
           }
         })
       }

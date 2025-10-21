@@ -35,7 +35,7 @@ export const authController = {
       const traceId = (req as TraceRequest).traceId;
 
       logger.error('Login error', {
-        code: 'INTERNAL_ERROR',
+        code: 'UNEXPECTED_ERROR',
         message: err instanceof Error ? err.message : 'Unknown error',
         traceId,
         endpoint: req.originalUrl,
@@ -80,7 +80,7 @@ export const authController = {
       const traceId = (req as TraceRequest).traceId;
 
       logger.error('Registration error', {
-        code: 'INTERNAL_ERROR',
+        code: 'UNEXPECTED_ERROR',
         message: err instanceof Error ? err.message : 'Unknown error',
         traceId,
         endpoint: req.originalUrl,

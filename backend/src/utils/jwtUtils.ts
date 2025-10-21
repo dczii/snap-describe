@@ -24,14 +24,14 @@ export function verifyRefreshToken(token: string) {
 //some utility functions
 export function stripPayloadClaims(payload: TokenWithClaims): JwtPayload {
     return {
-        userId: payload.userId,
-        device: payload.device
-    }
+      userId: payload.userId,
+      deviceHash: payload.deviceHash,
+    };
 }
 
 //helper
 export const generateTokens = (userId: string, deviceHash: string) => {
-    const payload = { userId, device: deviceHash };
+    const payload = { userId, deviceHash };
     return {
         accessToken: createAccessToken(payload),
         refreshToken: createRefreshToken(payload)
