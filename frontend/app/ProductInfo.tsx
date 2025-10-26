@@ -9,10 +9,14 @@ import {
   TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AddProductHeader from "./AddProductHeader";
+import ProdPageHeader from "@/components/add-product/AddProductHeader";
 import { Theme } from "@/constants/theme";
+import { useLocalSearchParams } from "expo-router";
+import AddProductHeader from "@/components/add-product/AddProductHeader";
 
 export default function ProductInfo() {
+  const productData = useLocalSearchParams();
+
   return (
     <>
       <AddProductHeader />
@@ -25,7 +29,14 @@ export default function ProductInfo() {
 
           <View style={styles.centerWrapper}>
             <View style={[styles.card, { paddingVertical: 16 }]}>
-              <Text style={styles.placeholderText}>+ Add Product Image</Text>
+              {productData?.imageUri ? (
+                <Image
+                  source={{ uri: productData.imageUri as string }}
+                  style={styles.imageLarge}
+                />
+              ) : (
+                <Text style={styles.placeholderText}>+ Add Product Image</Text>
+              )}
             </View>
           </View>
 
@@ -37,26 +48,26 @@ export default function ProductInfo() {
               <TextInput
                 style={[styles.input, { flex: 1, marginRight: 8 }]}
                 placeholder="NAME"
-                placeholderTextColor="#ccc"
+                placeholderTextColor={Theme.primary}
               />
               <TextInput
                 style={[styles.input, { flex: 1 }]}
                 placeholder="CONDITION"
-                placeholderTextColor="#ccc"
+                placeholderTextColor={Theme.primary}
               />
             </View>
 
             <View style={styles.row}>
               <TextInput
                 style={[styles.input, { flex: 1, marginRight: 8 }]}
-                placeholder="PRICE"
-                placeholderTextColor="#ccc"
+                placeholder="₱"
+                placeholderTextColor={Theme.primary}
                 keyboardType="numeric"
               />
               <TextInput
                 style={[styles.input, { flex: 1 }]}
                 placeholder="QUANTITY"
-                placeholderTextColor="#ccc"
+                placeholderTextColor={Theme.primary}
                 keyboardType="numeric"
               />
             </View>
@@ -64,7 +75,7 @@ export default function ProductInfo() {
             <TextInput
               style={[styles.input, styles.textArea]}
               placeholder="PRODUCT DESCRIPTION"
-              placeholderTextColor="#ccc"
+              placeholderTextColor={Theme.primary}
               multiline
               maxLength={200}
             />
@@ -72,7 +83,7 @@ export default function ProductInfo() {
             <TextInput
               style={[styles.input, styles.textArea]}
               placeholder="NOTES"
-              placeholderTextColor="#ccc"
+              placeholderTextColor={Theme.primary}
               multiline
               maxLength={200}
             />
@@ -80,7 +91,7 @@ export default function ProductInfo() {
             <TextInput
               style={styles.input}
               placeholder="CATEGORY"
-              placeholderTextColor="#ccc"
+              placeholderTextColor={Theme.primary}
             />
 
             {/* PUBLISH BUTTON */}
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   input: {
-    backgroundColor: Theme.secondary,
+    backgroundColor: "white",
     borderRadius: 8,
     padding: 12,
     fontSize: 14,

@@ -9,28 +9,17 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@/types/navigation";
-
-type UploadImageNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "UploadImage"
->;
+import { router } from "expo-router";
 
 export default function UploadImage() {
-  const navigation = useNavigation<UploadImageNavigationProp>();
-
   const prepareProductData = (asset: ImagePicker.ImagePickerAsset) => {
     return {
-      productData: {
-        imageUri: asset.uri,
-        fileName: asset.fileName ?? asset.uri.split("/").pop() ?? "photo.jpg",
-        type: asset.type ?? "image",
-        name: "",
-        category: "",
-        price: 0,
-      },
+      imageUri: asset.uri,
+      fileName: asset.fileName ?? asset.uri.split("/").pop() ?? "photo.jpg",
+      type: asset.type ?? "image",
+      name: "",
+      category: "",
+      price: 0,
     };
   };
 
@@ -51,14 +40,17 @@ export default function UploadImage() {
 
     if (!result.canceled && result.assets.length > 0) {
       const asset = result.assets[0];
-      const productDataJson = prepareProductData(asset);
+      const productData = prepareProductData(asset);
       console.log(
-        "JSON Payload (Camera):",
-        JSON.stringify(productDataJson, null, 2)
+        "📸 JSON Payload (Camera):",
+        JSON.stringify(productData, null, 2)
       );
 
-      // NAVIGATE PRODUCT INFO PAGE
-      navigation.navigate("ProductInfo", productDataJson);
+      // Navigate to product info page
+      router.push({
+        pathname: "/ProductInfo",
+        params: productData,
+      });
     }
   };
 
@@ -82,14 +74,17 @@ export default function UploadImage() {
 
     if (!result.canceled && result.assets.length > 0) {
       const asset = result.assets[0];
-      const productDataJson = prepareProductData(asset);
+      const productData = prepareProductData(asset);
       console.log(
-        "📤 JSON Payload (Gallery):",
-        JSON.stringify(productDataJson, null, 2)
+        "🖼️ JSON Payload (Gallery):",
+        JSON.stringify(productData, null, 2)
       );
 
-      // NAVIGATE PRODUCT INFO PAGE
-      navigation.navigate("ProductInfo", productDataJson);
+      // Navigate to product info page
+      router.push({
+        pathname: "/ProductInfo",
+        params: productData,
+      });
     }
   };
 
