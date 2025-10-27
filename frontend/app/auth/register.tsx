@@ -44,7 +44,8 @@ export default function Register() {
         password = "",
         confirmPassword = "",
       } = values;
-      const response = await fetch(`${apiURL}/v1/auth/mobile/register`, {
+      const url = `${apiURL}/v1/auth/mobile/register`;
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
