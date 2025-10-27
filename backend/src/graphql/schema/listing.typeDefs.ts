@@ -1,13 +1,12 @@
 import {gql} from "graphql-tag"
 
 export const listingSchema = gql`
-  #   enum listing_Condition {
-  #     New
-  #     Like
-  #     New
-  #     Used
-  #     Fair
-  #   }
+  enum listing_Condition {
+    New
+    Like
+    Used
+    Fair
+  }
 
   enum listingStatus {
     Available
@@ -21,7 +20,7 @@ export const listingSchema = gql`
     description: String!
     price: Float!
     qty: Int!
-    condition: String!
+    condition: listing_Condition!
     categoryId: Int!
     notes: String
     status: listingStatus!
@@ -55,7 +54,7 @@ export const listingSchema = gql`
     description: String!
     price: Float!
     qty: Int!
-    condition: String!
+    condition: listing_Condition!
     categoryId: Int!
     notes: String!
     imageFilePaths: [String!]!

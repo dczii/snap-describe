@@ -1,7 +1,7 @@
 import db from '../../../configs/dbConfig';
 import logger from '../../logger';
 import { makePlaceholder } from '../../utils/dbUtils';
-import IMAGE_PREPARED_QUERIES from './imagePreparedQueries';
+import IMAGE_PREPARED_STATEMENTS from './imagePreparedQueries';
 
 export interface ImageMetadata {
   userId: string;
@@ -15,7 +15,7 @@ export interface ImageMetadata {
 //simple insert images for now
 export async function insertImageMetadata(metadata: ImageMetadata) {
   try {
-    await db.query(IMAGE_PREPARED_QUERIES.insertImageData, [
+    await db.query(IMAGE_PREPARED_STATEMENTS.insertImageData, [
       Object.values(metadata),
     ]);
   } catch (err) {
@@ -38,10 +38,12 @@ export async function insertMultiImageData(metadata: ImageMetadata[]) {
         values.push(...Object.values(metadata[i]))
     }
 
-    const name = IMAGE_PREPARED_QUERIES.insertMultiImageData.name;
+    const name = IMAGE_PREPARED_STATEMENTS.insertMultiImageData.name;
 
     const text = `
-        ${IMAGE_PREPARED_QUERIES.insertMultiImageData.text} ${placeholder.join(",")} RETURNING id;
+        ${
+          IMAGE_PREPARED_STATEMENTS.insertMultiImageData.text
+        } ${placeholder.join(',')} RETURNING id;
     `;
 
     logger.info(text)
