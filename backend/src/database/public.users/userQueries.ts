@@ -20,10 +20,9 @@ export async function getUserByEmailForLogin(
   let user = localCache.get(email) as UserDTO | null;
   try {
     if (!user) {
-      const { rows } = await db.query(
-        USER_PREPARED_STATEMENTS.getUserByEmailForLogin,
-        [email],
-      );
+      const { rows } = await db.query(USER_PREPARED_STATEMENTS.getUserByEmail, [
+        email,
+      ]);
       user = rows[0] || null;
 
       if (!user) return null;

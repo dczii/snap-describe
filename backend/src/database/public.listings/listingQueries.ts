@@ -2,7 +2,8 @@ import db from '../../../configs/dbConfig';
 import logger from '../../logger';
 import LISTING_PREPARED_STATEMENTS from './listingPreparedQueries';
 import { makePlaceholder } from '../../utils/dbUtils';
-
+import { Listing_Condition } from '../../generated/graphql';
+import {listing}
 export interface ListingPhotos {
     listingId: number
     imageId: string
@@ -15,7 +16,7 @@ export async function createListing(
   description: string,
   price: number,
   quantity: number,
-  condition: 'New' | 'Like New' | 'Used' | 'Fair',
+  condition: Listing_Condition,
   categoryId: number,
   notes: string,
 ) {
@@ -30,9 +31,8 @@ export async function createListing(
       categoryId,
       notes,
     ]);
-    
-    return result.rows[0].id ?? null
 
+    return result.rows[0].id ?? null;
   } catch (err) {
     logger.error(err);
     throw new Error('Database Error');

@@ -13,6 +13,7 @@ import {
 } from '../database/public.listings/listingQueries';
 import db from '../../configs/dbConfig';
 import { getSellerById } from '../database/public.users/userQueries';
+import { Listing_Condition } from '../generated/graphql';
 
 export const uploadProductListing = async (data: {
   userId: string | null | undefined;
@@ -20,7 +21,7 @@ export const uploadProductListing = async (data: {
   description: string;
   price: number;
   qty: number;
-  condition: 'New' | 'Like New' | 'Used' | 'Fair';
+  condition: Listing_Condition;
   categoryId: number;
   notes: string;
   imageFilePaths: string[];
@@ -50,8 +51,8 @@ export const uploadProductListing = async (data: {
     if (!sellerExist) {
       throw new GraphQLError('Forbidden', {
         extensions: {
-          code: 'FORBIDDEN'
-        }
+          code: 'FORBIDDEN',
+        },
       });
     }
 

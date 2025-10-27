@@ -52,46 +52,28 @@ function makePlaceholder(rowIndex: number, columnCount: number) {
 }
 
 async function seedUsers() {
-  // const rowCounts = 100;
-  // const columnCounts = 4;
-  // const values = [];
-  // const placeholder = [];
+  const rowCounts = 100;
+  const columnCounts = 4;
+  const values = [];
+  const placeholder = [];
 
-  // for (let i = 0; i < rowCounts; i++) {
-  //   const display_name = faker.person.fullName();
-  //   const phone_no = generateUniquePHPhoneNumber();
-  //   const email = generateUniqueEmail();
-  //   const password_hash = await hashPassword('Tester123!');
+  for (let i = 0; i < rowCounts; i++) {
+    const display_name = faker.person.fullName();
+    const phone_no = generateUniquePHPhoneNumber();
+    const email = generateUniqueEmail();
+    const password_hash = await hashPassword('Tester123!');
 
-  //   values.push(display_name, phone_no, email, password_hash);
-  //   placeholder.push(makePlaceholder(i, columnCounts));
-  // }
+    values.push(display_name, phone_no, email, password_hash);
+    placeholder.push(makePlaceholder(i, columnCounts));
+  }
 
-  // const query = `
-  //       INSERT INTO users (display_name, phone_no, email, password_hash)
-  //       VALUES ${placeholder.join(',')}
-  //   `;
+  const query = `
+        INSERT INTO users (display_name, phone_no, email, password_hash)
+        VALUES ${placeholder.join(',')}
+    `;
 
-  // await db.query(query, values);
-  // logger.info(`Seeding complete - ${rowCounts} users inserted`);
-
-  const password = "Seller01!"
-  const passwordHash = await bcrypt.hash(password, 10);
-  const values = [
-    'seller002',
-    'seller02@gmail.com',
-    passwordHash,
-    'seller',
-    '09090909091',
-    true,
-  ];
-  await db.query(
-    `
-    INSERT INTO public.users (display_name, email, password_hash, role, phone_no, verified)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    `,
-    values,
-  );
+  await db.query(query, values);
+  logger.info(`Seeding complete - ${rowCounts} users inserted`);
 }
 
 seedUsers()

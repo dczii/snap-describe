@@ -7,13 +7,6 @@ export const USER_PREPARED_STATEMENTS = {
         `,
   },
 
-  getUserByEmailForLogin: {
-    name: 'get_user_by_email_login',
-    text: `
-            SELECT id, password_hash FROM users WHERE email = $1
-        `,
-  },
-
   getUserByEmail: {
     name: 'get_user_by_email',
     text: `

@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { GraphQLContext } from '../../../lib/context';
 import { uploadProductListing } from '../../../services/listingServices';
-
+import { Listing_Condition } from '../../../generated/graphql';
 //simple flow for now
 export const listingMutations = {
   Mutation: {
@@ -13,7 +13,7 @@ export const listingMutations = {
           description: string;
           price: number;
           qty: number;
-          condition: 'New' | 'Like New' | 'Used' | 'Fair';
+          condition: Listing_Condition;
           categoryId: number;
           notes: string;
           imageFilePaths: string[];
@@ -22,21 +22,20 @@ export const listingMutations = {
       context: GraphQLContext,
     ) => {
       //simple auth check for now
-      const userId = context.userId
+      const userId = context.userId;
       try {
         return await uploadProductListing({ userId, ...args.data });
       } catch (err) {
         if (err instanceof GraphQLError) {
-          throw err
+          throw err;
         }
 
-        throw new GraphQLError("Unexpected error occurred", {
+        throw new GraphQLError('Unexpected error occurred', {
           extensions: {
-            code: "UNEXPECTED_ERROR"
-          }
-        })
+            code: 'UNEXPECTED_ERROR',
+          },
+        });
       }
-      
     },
   },
 };
