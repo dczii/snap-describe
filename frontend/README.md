@@ -1,4 +1,4 @@
-# Snap Describe Frontend
+# Snap Describe Frontend test
 
 Welcome to the frontend of your Expo app! 🚀  
 This project was bootstrapped with [Expo](https://expo.dev) using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
