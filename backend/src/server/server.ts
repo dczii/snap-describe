@@ -23,22 +23,22 @@ const server = new ApolloServer({
     ...(env.isProd ? [ApolloServerPluginLandingPageDisabled()] : []),
   ],
   introspection: !env.isProd,
-  formatError: (
-    formatError: GraphQLFormattedError,
-    error: unknown,
-  ): GraphQLFormattedError => {
-    if (
-      error instanceof GraphQLError &&
-      typeof error.extensions?.code === 'string'
-    ) {
-      return {
-        message: error.extensions.code,
-      };
-    }
-    return {
-      message: 'Internal Server Error',
-    };
-  },
+  // formatError: (
+  //   formatError: GraphQLFormattedError,
+  //   error: unknown,
+  // ): GraphQLFormattedError => {
+  //   if (
+  //     error instanceof GraphQLError &&
+  //     typeof error.extensions?.code === 'string'
+  //   ) {
+  //     return {
+  //       message: error.extensions.code,
+  //     };
+  //   }
+  //   return {
+  //     message: 'Internal Server Error',
+  //   };
+  // },
 });
 
 //start server

@@ -14,6 +14,7 @@ export const Theme = {
   text: Colors.text,
   primary: "#1A2D42",
   secondary: "#2E4156",
+  rates: "#FFC107",
 };
 
 const Gradients = {

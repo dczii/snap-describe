@@ -1,49 +1,46 @@
 import React from "react";
-import { Text, StyleSheet, View, Pressable } from "react-native";
+import { Text, StyleSheet, View, Pressable, Image } from "react-native";
 import { Theme } from "@/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProdPageBar() {
-  const handleBuyNow = () => {};
+  const insets = useSafeAreaInsets();
 
-  const handleAddToCart = () => {};
+  const handleMakeItYours = () => {};
 
-  const handleMessage = () => {};
-
-  const handleSellerProfile = () => {};
+  const handleTrade = () => {};
 
   return (
-    <>
-      {/* BOTTOM BAR */}
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomRow}>
-          <View style={styles.secondaryActions}>
-            <Pressable style={styles.iconButton} onPress={handleSellerProfile}>
-              <Ionicons name="person" size={32} color={Theme.primary} />
-            </Pressable>
-
-            <Pressable style={styles.iconButton} onPress={handleMessage}>
-              <Ionicons name="chatbubble" size={32} color={Theme.primary} />
-            </Pressable>
+    <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 12 }]}>
+      <View style={styles.primaryActions}>
+        <Pressable style={styles.tradeBtn} onPress={handleTrade}>
+          <View style={styles.btnContent}>
+            <Image
+              source={require("@/assets/icon/trade-white.png")}
+              style={styles.imageIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.tradeText}>Exchange</Text>
           </View>
+        </Pressable>
 
-          <View style={styles.primaryActions}>
-            <Pressable style={styles.addToCartBtn} onPress={handleAddToCart}>
-              <Text style={styles.addToCartText}>Add to Cart</Text>
-            </Pressable>
-
-            <Pressable style={styles.buyNowBtn} onPress={handleBuyNow}>
-              <Text style={styles.buyNowText}>Buy Now</Text>
-            </Pressable>
+        <Pressable style={styles.makeItYoursBtn} onPress={handleMakeItYours}>
+          <View style={styles.btnContent}>
+            <Image
+              source={require("@/assets/icon/bag.png")}
+              style={styles.imageIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.makeItYoursText}>Make It Yours</Text>
           </View>
-        </View>
+        </Pressable>
       </View>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // BOTTOM BAR STYLES
+  // LAYOUT
   bottomBar: {
     position: "absolute",
     bottom: 0,
@@ -52,70 +49,65 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopWidth: 1,
     borderTopColor: Theme.secondary,
-    paddingBottom: 32,
     paddingTop: 12,
     paddingHorizontal: 12,
     shadowColor: Theme.secondary,
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
+    shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 8,
   },
-  bottomRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 40,
-  },
 
-  // ACTION & BUTTON
-  secondaryActions: {
-    flexDirection: "row",
-    gap: 32,
-  },
   primaryActions: {
     flexDirection: "row",
+    justifyContent: "space-between",
     gap: 8,
   },
-  iconButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 32,
-    height: 32,
-  },
-  addToCartBtn: {
+
+  // BUTTONS
+  tradeBtn: {
     backgroundColor: Theme.secondary,
     borderWidth: 2,
     borderColor: Theme.primary,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    flex: 1,
+    paddingVertical: 10,
     borderRadius: 8,
-    width: 117,
-    height: 44,
-  },
-  buyNowBtn: {
-    backgroundColor: Theme.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    width: 117,
-    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  // TYPOGRAPHY
-  addToCartText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "600",
-    textAlign: "center",
+  makeItYoursBtn: {
+    backgroundColor: Theme.primary,
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  buyNowText: {
+
+  btnContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+
+  // TYPHOGRAPHY
+  tradeText: {
     color: "white",
     fontSize: 12,
     fontWeight: "600",
-    textAlign: "center",
+  },
+
+  makeItYoursText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
+  // ICON
+  imageIcon: {
+    width: 20,
+    height: 20,
   },
 });

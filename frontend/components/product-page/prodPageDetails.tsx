@@ -1,7 +1,6 @@
 import React from "react";
 import { Text, StyleSheet, View } from "react-native";
 import ImageContainer from "@/components/home/ImageContainer";
-import Ratings from "@/components/home/Ratings";
 import { Theme } from "@/constants/theme";
 import { useLocalSearchParams } from "expo-router";
 
@@ -28,15 +27,13 @@ export default function ProdPageDetails() {
         <View style={styles.between}>
           <Text style={styles.title}>{parsedProduct.title}</Text>
           <Text style={[styles.title, { fontWeight: 600 }]}>
-            {parsedProduct.sold}k Sold
+            QTY: {parsedProduct.qty}
           </Text>
         </View>
         <Text style={styles.price}>₱{parsedProduct.price}</Text>
-        <Text style={styles.description}>{parsedProduct.description}</Text>
-
         <View style={styles.between}>
-          <Text style={styles.location}>{parsedProduct.location}</Text>
-          <Ratings value={parsedProduct.rating} />
+          <Text style={styles.description}>{parsedProduct.description}</Text>
+          <Text style={styles.tagChip}>Likely Used</Text>
         </View>
       </View>
     </View>
@@ -99,5 +96,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 12,
     marginBottom: 4,
+  },
+
+  // TAG CHIP
+  tagChip: {
+    color: Theme.primary,
+    backgroundColor: "white",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 16,
   },
 });
