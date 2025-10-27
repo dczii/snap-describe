@@ -30,7 +30,8 @@ export default function Login() {
   const handleLogin = async (values: FormProps) => {
     try {
       const { email = "", password = "" } = values;
-      const response = await fetch(`${apiURL}/v1/auth/mobile/login`, {
+      const url = `${apiURL}/v1/auth/mobile/login`;
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,9 +59,8 @@ export default function Login() {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        {/* SNAP LOGO */}
         <Image
-          source={require("../../assets/logos/thrift-logo.png")}
+          source={require("@/assets/logos/thrift-logo.png")}
           style={styles.logo}
         />
         <Formik
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   container: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 12,
     paddingVertical: 32,
     width: "100%",
     backgroundColor: "white",
