@@ -1,8 +1,9 @@
 import db from '../../../configs/dbConfig';
 import logger from '../../logger';
-import LISTING_PREPARED_QUERIES from './listingPreparedQueries';
+import LISTING_PREPARED_STATEMENTS from './listingPreparedQueries';
 import { makePlaceholder } from '../../utils/dbUtils';
-
+import { Listing_Condition } from '../../generated/graphql';
+import {listing}
 export interface ListingPhotos {
     listingId: number
     imageId: string
@@ -15,27 +16,23 @@ export async function createListing(
   description: string,
   price: number,
   quantity: number,
-  condition: 'New' | 'Like New' | 'Used' | 'Fair',
+  condition: Listing_Condition,
   categoryId: number,
   notes: string,
 ) {
   try {
-    const result = await db.query(
-      LISTING_PREPARED_QUERIES.createListing,
-      [
-        sellerId,
-        title,
-        description,
-        price,
-        quantity,
-        condition,
-        categoryId,
-        notes,
-      ],
-    );
-    
-    return result.rows[0].id ?? null
+    const result = await db.query(LISTING_PREPARED_STATEMENTS.createListing, [
+      sellerId,
+      title,
+      description,
+      price,
+      quantity,
+      condition,
+      categoryId,
+      notes,
+    ]);
 
+    return result.rows[0].id ?? null;
   } catch (err) {
     logger.error(err);
     throw new Error('Database Error');
@@ -55,8 +52,10 @@ export async function insertListingPhotos(listingPhotos: ListingPhotos[]) {
             values.push(...Object.values(listingPhotos[i]))
         }
 
-        const text = `${LISTING_PREPARED_QUERIES.insertListingPhotos.text} ${placeholder.join(",")}`;
-        const name = LISTING_PREPARED_QUERIES.insertListingPhotos.name;
+        const text = `${
+          LISTING_PREPARED_STATEMENTS.insertListingPhotos.text
+        } ${placeholder.join(',')}`;
+        const name = LISTING_PREPARED_STATEMENTS.insertListingPhotos.name;
         logger.info(text)
         const result = await db.query({name, text}, values)
         return result.rowCount

@@ -1,6 +1,6 @@
 export interface JwtPayload {
     userId: string; 
-    device: string
+    deviceHash: string
 }
 
 export type TokenWithClaims = JwtPayload & {

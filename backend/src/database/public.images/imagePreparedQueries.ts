@@ -1,4 +1,4 @@
-const IMAGE_PREPARED_QUERIES = {
+const IMAGE_PREPARED_STATEMENTS = {
   insertImageData: {
     name: 'insert_image_metadata',
     text: `
@@ -15,4 +15,4 @@ const IMAGE_PREPARED_QUERIES = {
   },
 };
 
-export default IMAGE_PREPARED_QUERIES;
+export default IMAGE_PREPARED_STATEMENTS;
