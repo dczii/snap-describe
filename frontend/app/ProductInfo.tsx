@@ -13,9 +13,26 @@ import ProdPageHeader from "@/components/add-product/AddProductHeader";
 import { Theme } from "@/constants/theme";
 import { useLocalSearchParams } from "expo-router";
 import AddProductHeader from "@/components/add-product/AddProductHeader";
+import { useRouter } from "expo-router";
+import { useProductStore } from "@/store/productStore";
+import { useState } from "react";
 
 export default function ProductInfo() {
   const productData = useLocalSearchParams();
+  const { addProduct } = useProductStore();
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+
+  const handlePublish = () => {
+    addProduct({
+      id: Date.now().toString(),
+      title: name,
+      price: Number(price),
+      imageUri: productData?.imageUri as string,
+    });
+    router.back();
+  };
 
   return (
     <>
@@ -49,6 +66,8 @@ export default function ProductInfo() {
                 style={[styles.input, { flex: 1, marginRight: 8 }]}
                 placeholder="NAME"
                 placeholderTextColor={Theme.primary}
+                value={name}
+                onChangeText={setName}
               />
               <TextInput
                 style={[styles.input, { flex: 1 }]}
@@ -63,6 +82,8 @@ export default function ProductInfo() {
                 placeholder="₱"
                 placeholderTextColor={Theme.primary}
                 keyboardType="numeric"
+                value={price}
+                onChangeText={setPrice}
               />
               <TextInput
                 style={[styles.input, { flex: 1 }]}
@@ -95,7 +116,10 @@ export default function ProductInfo() {
             />
 
             {/* PUBLISH BUTTON */}
-            <TouchableOpacity style={styles.publishButton}>
+            <TouchableOpacity
+              style={styles.publishButton}
+              onPress={handlePublish}
+            >
               <Text style={styles.publishText}>Publish</Text>
             </TouchableOpacity>
           </View>
@@ -155,7 +179,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 14,
     marginBottom: 10,
-    color: "white",
+    color: Theme.primary,
     opacity: 0.8,
   },
   textArea: {
@@ -179,7 +203,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   placeholderText: {
-    color: "rgba(255, 255, 255, 0.5)",
+    color: "white",
     fontSize: 16,
   },
   publishText: {

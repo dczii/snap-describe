@@ -13,6 +13,7 @@ import CategoryChips from "@/components/home/Category";
 import BannerCarousel from "@/components/home/Banner";
 import Ratings from "@/components/home/Ratings";
 import { useRouter } from "expo-router";
+import { useProductStore } from "@/store/productStore";
 
 const CATEGORIES = [
   "Likes",
@@ -35,86 +36,13 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const router = useRouter();
 
-  const products = [
-    {
-      id: 1,
-      src: require("../../assets/image/coat.png"),
-      title: "Winter Coat",
-      price: 190,
-      rating: 5,
-      description: "Very comfortable coat, better for office",
-      sold: 1.1,
-      qty: 1,
-      location: "Bulacan",
-      comment: "Not bad for second hand. very comfortable.",
-    },
-    {
-      id: 2,
-      src: require("../../assets/image/shoes.png"),
-      title: "Jordan Nike",
-      price: 200,
-      rating: 4,
-      description: "Suitable for sports activities.",
-      sold: 1.4,
-      qty: 1,
-      location: "Manila",
-      comment: "Wow fantastic baby!.",
-    },
-    {
-      id: 3,
-      src: require("../../assets/image/fashion.png"),
-      title: "Louis Vuitton",
-      price: 300,
-      rating: 5,
-      description: "Very elegant look.",
-      sold: 5.1,
-      qty: 1,
-      location: "Manila",
-      comment: "Niceee bag",
-    },
-    {
-      id: 4,
-      src: require("../../assets/image/jewelry-set.png"),
-      title: "Jewelry Set",
-      price: 500,
-      rating: 4,
-      description: "So clean, so good.",
-      sold: 1.4,
-      qty: 1,
-      location: "Laguna",
-      comment: "Beautiful!!!",
-    },
-    {
-      id: 5,
-      src: require("../../assets/image/sunglass.png"),
-      title: "Shades",
-      price: 100,
-      rating: 3,
-      description: "I see what you can't",
-      sold: 1.3,
-      qty: 1,
-      location: "Quezon City",
-      comment: "I believe i can fly",
-    },
-    {
-      id: 6,
-      src: require("../../assets/image/pearl.png"),
-      title: "Sling Bag",
-      price: 200,
-      rating: 5,
-      description: "The bag for self defense.",
-      sold: 12,
-      qty: 1,
-      location: "Manila",
-      comment: "Worth it!",
-    },
-  ];
+  const { products } = useProductStore();
 
   // PRODUCT FILTER
   const filteredProducts = useMemo(() => {
     const q = query.trim().toLowerCase();
 
-    return products.filter((p) => {
+    return products.filter((p: { title: string }) => {
       const t = p.title.toLowerCase();
       const matchText = !q || t.includes(q);
       const matchCat = !category || t.includes(category.toLowerCase());
@@ -134,7 +62,7 @@ export default function Home() {
     <View style={Styles.card}>
       <TouchableOpacity onPress={() => handleProductPress(item)}>
         <ImageContainer
-          source={item.src}
+          source={item.imageUri ? { uri: item.imageUri } : item.src}
           width={"100%"}
           height={100}
           borderRadius={10}
@@ -223,6 +151,9 @@ const Styles = StyleSheet.create({
     borderRadius: 10,
     padding: 6,
     elevation: 8,
+    minWidth: "30%", // 👈 ensures 3 columns stay aligned
+    maxWidth: "30%",
+    alignSelf: "stretch",
   },
 
   // TYPOGRAPHY
