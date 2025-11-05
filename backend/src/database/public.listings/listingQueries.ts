@@ -3,7 +3,8 @@ import logger from '../../logger';
 import LISTING_PREPARED_STATEMENTS from './listingPreparedQueries';
 import { makePlaceholder } from '../../utils/dbUtils';
 import { Listing_Condition } from '../../generated/graphql';
-import {listing}
+
+
 export interface ListingPhotos {
     listingId: number
     imageId: string
@@ -64,3 +65,18 @@ export async function insertListingPhotos(listingPhotos: ListingPhotos[]) {
         throw new Error("Database error")
     }
 }
+
+export async function getHomePageListings() {
+  try {
+    const {rows} = await db.query(LISTING_PREPARED_STATEMENTS.getHomepageListings);
+    if (!rows) {
+      return null
+    }
+    return rows
+  } catch (err) {
+    //simple error handler for now
+    logger.error(err)
+    throw new Error ("Database error")
+  }
+}
+

@@ -8,12 +8,14 @@ import { env } from '../../configs/env';
 import logger from '../logger';
 import {
   createListing,
+  getHomePageListings,
   insertListingPhotos,
   ListingPhotos,
 } from '../database/public.listings/listingQueries';
 import db from '../../configs/dbConfig';
 import { getSellerById } from '../database/public.users/userQueries';
 import { Listing_Condition } from '../generated/graphql';
+import { getAllCategories } from '../database/public.categories/categoryQueries';
 
 export const uploadProductListing = async (data: {
   userId: string | null | undefined;
@@ -158,3 +160,21 @@ export const uploadProductListing = async (data: {
     throw err;
   }
 };
+
+export const getHomepageData = async () => {
+  //simple logic for now
+  try {
+    const listings = await getHomePageListings();
+    const categories = await getAllCategories();
+    return {
+      listings,
+      categories
+    }
+  } catch (err) {
+    //simple error for now
+    throw err
+  }
+
+
+
+}

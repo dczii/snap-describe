@@ -14,18 +14,18 @@ export interface ImageDTO {
 //simple upload endpoint for now
 export const uploadController = {
   uploadUrl: async (req: Request, res: Response) => {
-    const ip = getClientIp(req)
-    const deviceHash = hashClientDevice(req)
+    const ip = getClientIp(req);
+    const deviceHash = hashClientDevice(req);
     const userId = (req as AuthRequest).userId;
     const images: ImageDTO[] = req.body.images;
-
     try {
       const uploadUrls = await signedUrl(ip, deviceHash, userId, images);
-      return res.status(200).json(uploadUrls)
+      return res.status(200).json(uploadUrls);
     } catch (err) {
-      if(err instanceof Error && err.message in ERROR_RESPONSES) {
-        const {status, code, message} = ERROR_RESPONSES[err.message as ErrorType]
-        return res.status(status).json({code, message})
+      if (err instanceof Error && err.message in ERROR_RESPONSES) {
+        const { status, code, message } =
+          ERROR_RESPONSES[err.message as ErrorType];
+        return res.status(status).json({ code, message });
       }
 
       const traceId = (req as TraceRequest).traceId;
