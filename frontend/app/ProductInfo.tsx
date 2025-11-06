@@ -9,13 +9,14 @@ import {
   TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProdPageHeader from "@/components/add-product/AddProductHeader";
 import { Theme } from "@/constants/theme";
 import { useLocalSearchParams } from "expo-router";
 import AddProductHeader from "@/components/add-product/AddProductHeader";
 import { useRouter } from "expo-router";
 import { useProductStore } from "@/store/productStore";
 import { useState } from "react";
+import { accessToken, MOBILE_API_URL } from "@/utils/authUtils";
+import { Picker } from "@react-native-picker/picker";
 
 export default function ProductInfo() {
   const productData = useLocalSearchParams();
@@ -23,15 +24,126 @@ export default function ProductInfo() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [condition, setCondition] = useState("Brand New");
 
-  const handlePublish = () => {
-    addProduct({
-      id: Date.now().toString(),
-      title: name,
-      price: Number(price),
-      imageUri: productData?.imageUri as string,
+  const apiUrl = MOBILE_API_URL;
+  const getSignedUrl = async (filename: string) => {
+    const res = await fetch(`${apiUrl}/upload-url`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        images: [
+          { filename, mimeType: "image/png" },
+          { filename, mimeType: "image/jpeg" },
+          { filename, mimeType: "image/jpg" },
+        ],
+      }),
     });
-    router.back();
+    const data = await res.json();
+    return data[0];
+  };
+
+  const uploadToSignedUrl = async (signedUrl: string, imageUri: string) => {
+    const image = await fetch(imageUri);
+    const blob = await image.blob();
+
+    const upload = await fetch(signedUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": blob.type || "application/octet-stream",
+      },
+      body: blob,
+    });
+
+    if (!upload.ok) throw new Error("Upload failed");
+  };
+
+  const createListing = async (filePath: string) => {
+    const mutation = `
+      mutation createListing($data: CreateListingInput!) {
+        createListing(data: $data) {
+          message
+        }
+      }
+    `;
+
+    const variables = {
+      data: {
+        title: name,
+        description: "test",
+        price: Number(price),
+        qty: 100,
+        condition: "New",
+        categoryId: 1,
+        notes: "Test",
+        imageFilePaths: [filePath],
+      },
+    };
+
+    try {
+      const res = await fetch(`${apiUrl}/graphql`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ query: mutation, variables }),
+      });
+
+      const text = await res.text();
+
+      // 🔍 Debugging output
+      console.log("⚠️ Response status:", res.status);
+      console.log("⚠️ Raw response text:", text.slice(0, 200));
+
+      if (!res.ok) {
+        throw new Error(`Server error ${res.status}`);
+      }
+
+      if (text.startsWith("<")) {
+        throw new Error(
+          "Server returned HTML instead of JSON. Check your API URL or dev tunnel."
+        );
+      }
+
+      const data = JSON.parse(text);
+
+      if (!data?.data?.createListing?.message) {
+        throw new Error("Invalid response format from server.");
+      }
+
+      return data.data.createListing.message;
+    } catch (error) {
+      console.error("createListing failed:", error);
+      throw error;
+    }
+  };
+
+  const handlePublish = async () => {
+    try {
+      const filename = "image_" + Date.now() + ".png";
+      const { signedUrl, filePath } = await getSignedUrl(filename);
+      await uploadToSignedUrl(signedUrl, productData.imageUri as string);
+
+      const message = await createListing(filePath);
+
+      addProduct({
+        id: Date.now().toString(),
+        title: name,
+        price: Number(price),
+        imageUri: productData.imageUri as string,
+        location: "Manila",
+      });
+
+      alert(message);
+      router.back();
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading product");
+    }
   };
 
   return (
@@ -69,11 +181,18 @@ export default function ProductInfo() {
                 value={name}
                 onChangeText={setName}
               />
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                placeholder="CONDITION"
-                placeholderTextColor={Theme.primary}
-              />
+              <View style={[styles.pickerContainer, { flex: 1 }]}>
+                <Picker
+                  selectedValue={condition}
+                  onValueChange={(value) => setCondition(value)}
+                  style={styles.picker}
+                  dropdownIconColor={Theme.primary}
+                >
+                  <Picker.Item label="Brand New" value="Brand New" />
+                  <Picker.Item label="Like New" value="Like New" />
+                  <Picker.Item label="Used" value="Used" />
+                </Picker>
+              </View>
             </View>
 
             <View style={styles.row}>
@@ -192,6 +311,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 10,
     alignItems: "center",
+  },
+  pickerContainer: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    marginBottom: 10,
+    justifyContent: "center",
+  },
+  picker: {
+    color: Theme.primary,
+    opacity: 0.8,
   },
 
   // TYPOGRAPHY
