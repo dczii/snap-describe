@@ -3,8 +3,8 @@ import app from '../src/server/app';
 
 const loginMocks = {
   validUser: {
-    email: 'Tester01@gmail.com',
-    password: 'Tester123!',
+    email: 'Seller02@gmail.com',
+    password: 'Seller01!',
   },
 
   invalidUser: {

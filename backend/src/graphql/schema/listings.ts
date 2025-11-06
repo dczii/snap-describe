@@ -11,7 +11,7 @@ export const listingSchema = gql`
 
   type ListingOperationResponse {
     message: String
-    data: [Listing!]
+    listings: [Listing!]
   }
 
   input CreateListingInput {

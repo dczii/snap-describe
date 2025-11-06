@@ -3,7 +3,7 @@ import {gql} from "graphql-tag"
 export const homepageSchema = gql`
   extend type Listing {
     city: String
-    fileurl: String
+    fileUrl: String
   }
   
   type Homepage {
@@ -12,11 +12,11 @@ export const homepageSchema = gql`
   }
 
   type Query {
-    getListingsWithCategories: HomepageOperationResponse!
+    listingsWithCategories: HomepageOperationResponse!
   }
 
   type HomepageOperationResponse {
     message: String!
-    data: Homepage!
+    homepageData: Homepage!
   }
 `;

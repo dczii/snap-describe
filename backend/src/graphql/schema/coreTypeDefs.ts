@@ -37,9 +37,9 @@ export const coreSchema = gql`
     
     #Categories
     type Category {
-        id: Int!
+        id: Int
         name: String!
-        slug: String!
-        parent_id: Int!
+        slug: String
+        parentId: Int
     }
 `;

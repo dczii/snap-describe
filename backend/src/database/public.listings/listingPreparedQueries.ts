@@ -19,7 +19,7 @@ const LISTING_PREPARED_STATEMENTS = {
         SELECT 
             l.title, l.price, 
             COALESCE(ua.city, 'Unknown location') AS city, 
-            i.file_url AS fileurl
+            i.file_url AS "fileUrl"
         FROM public.listing_photos lp
         INNER JOIN public.listings l
         ON lp.listing_id = l.id

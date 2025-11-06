@@ -2,7 +2,7 @@ import db from '../../../configs/dbConfig';
 import logger from '../../logger';
 import LISTING_PREPARED_STATEMENTS from './listingPreparedQueries';
 import { makePlaceholder } from '../../utils/dbUtils';
-import { Listing_Condition } from '../../generated/graphql';
+import { ListingCondition } from '../../generated/graphql';
 
 
 export interface ListingPhotos {
@@ -17,7 +17,7 @@ export async function createListing(
   description: string,
   price: number,
   quantity: number,
-  condition: Listing_Condition,
+  condition: ListingCondition,
   categoryId: number,
   notes: string,
 ) {
@@ -66,13 +66,13 @@ export async function insertListingPhotos(listingPhotos: ListingPhotos[]) {
     }
 }
 
-export async function getHomePageListings() {
+export async function fetchHomepageListings() {
   try {
     const {rows} = await db.query(LISTING_PREPARED_STATEMENTS.getHomepageListings);
     if (!rows) {
       return null
     }
-    return rows
+    return rows 
   } catch (err) {
     //simple error handler for now
     logger.error(err)

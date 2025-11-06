@@ -4,7 +4,7 @@ import { getHomepageData } from '../../../services/listingServices';
 
 export const homepageQueries = {
   Query: {
-    getListingsWithCategories: async (
+    listingsWithCategories: async (
       _: unknown,
       __: unknown,
       context: GraphQLContext,
@@ -18,7 +18,7 @@ export const homepageQueries = {
         const data = await getHomepageData();
         return {
           message: 'Successfully retrieved listings.',
-          data: {
+          homepageData: {
             listings: data.listings,
             categories: data.categories,
           },
