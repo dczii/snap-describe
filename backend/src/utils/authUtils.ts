@@ -20,3 +20,7 @@ export function hashClientDevice (req: Request) {
     const parsedDF = JSON.stringify(deviceFingerprint)
     return crypto.createHash("sha256").update(parsedDF).digest("hex")
 }
+
+
+
+

@@ -8,12 +8,14 @@ import { env } from '../../configs/env';
 import logger from '../logger';
 import {
   createListing,
+  fetchHomepageListings,
   insertListingPhotos,
   ListingPhotos,
 } from '../database/public.listings/listingQueries';
 import db from '../../configs/dbConfig';
 import { getSellerById } from '../database/public.users/userQueries';
-import { Listing_Condition } from '../generated/graphql';
+import { ListingCondition } from '../generated/graphql';
+import { fetchAllCategories } from '../database/public.categories/categoryQueries';
 
 export const uploadProductListing = async (data: {
   userId: string | null | undefined;
@@ -21,7 +23,7 @@ export const uploadProductListing = async (data: {
   description: string;
   price: number;
   qty: number;
-  condition: Listing_Condition;
+  condition: ListingCondition;
   categoryId: number;
   notes: string;
   imageFilePaths: string[];
@@ -158,3 +160,18 @@ export const uploadProductListing = async (data: {
     throw err;
   }
 };
+
+export const getHomepageData = async () => {
+  //simple logic for now
+  try {
+    const listings = await fetchHomepageListings();
+    const categories = await fetchAllCategories();
+    return {
+      listings,
+      categories
+    }
+  } catch (err) {
+    //simple error for now
+    throw err
+  }
+}
