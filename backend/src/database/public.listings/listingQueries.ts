@@ -3,11 +3,11 @@ import logger from '../../logger';
 import LISTING_PREPARED_STATEMENTS from './listingPreparedQueries';
 import { makePlaceholder } from '../../utils/dbUtils';
 import { Listing_Condition } from '../../generated/graphql';
-import {listing}
+// import {listing}
 export interface ListingPhotos {
-    listingId: number
-    imageId: string
-    sortOrder: number
+  listingId: number;
+  imageId: string;
+  sortOrder: number;
 }
 
 export async function createListing(
@@ -40,27 +40,27 @@ export async function createListing(
 }
 
 export async function insertListingPhotos(listingPhotos: ListingPhotos[]) {
-    try {
-        const rowCount = listingPhotos.length
-        const columnCount = Object.keys(listingPhotos[0]).length
-        logger.info(columnCount)
-        const placeholder = []
-        const values = []
+  try {
+    const rowCount = listingPhotos.length;
+    const columnCount = Object.keys(listingPhotos[0]).length;
+    logger.info(columnCount);
+    const placeholder = [];
+    const values = [];
 
-        for (let i = 0; i < rowCount; i++) {
-            placeholder.push(makePlaceholder(i, columnCount));
-            values.push(...Object.values(listingPhotos[i]))
-        }
-
-        const text = `${
-          LISTING_PREPARED_STATEMENTS.insertListingPhotos.text
-        } ${placeholder.join(',')}`;
-        const name = LISTING_PREPARED_STATEMENTS.insertListingPhotos.name;
-        logger.info(text)
-        const result = await db.query({name, text}, values)
-        return result.rowCount
-    } catch (err) {
-        logger.error(err)
-        throw new Error("Database error")
+    for (let i = 0; i < rowCount; i++) {
+      placeholder.push(makePlaceholder(i, columnCount));
+      values.push(...Object.values(listingPhotos[i]));
     }
+
+    const text = `${
+      LISTING_PREPARED_STATEMENTS.insertListingPhotos.text
+    } ${placeholder.join(',')}`;
+    const name = LISTING_PREPARED_STATEMENTS.insertListingPhotos.name;
+    logger.info(text);
+    const result = await db.query({ name, text }, values);
+    return result.rowCount;
+  } catch (err) {
+    logger.error(err);
+    throw new Error('Database error');
+  }
 }

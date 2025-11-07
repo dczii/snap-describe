@@ -17,6 +17,7 @@ import { useProductStore } from "@/store/productStore";
 import { useState } from "react";
 import { accessToken, MOBILE_API_URL } from "@/utils/authUtils";
 import { Picker } from "@react-native-picker/picker";
+import { CreateListMutation } from "@/utils/graphql/mutations";
 
 export default function ProductInfo() {
   const productData = useLocalSearchParams();
@@ -62,14 +63,6 @@ export default function ProductInfo() {
   };
 
   const createListing = async (filePath: string) => {
-    const mutation = `
-      mutation createListing($data: CreateListingInput!) {
-        createListing(data: $data) {
-          message
-        }
-      }
-    `;
-
     const variables = {
       data: {
         title: name,
@@ -90,7 +83,7 @@ export default function ProductInfo() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ query: mutation, variables }),
+        body: JSON.stringify({ query: CreateListMutation, variables }),
       });
 
       const text = await res.text();
