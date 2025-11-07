@@ -14,9 +14,23 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Category = {
+  __typename?: 'Category';
+  id?: Maybe<Scalars['Int']['output']>;
+  name: Scalars['String']['output'];
+  parentId?: Maybe<Scalars['Int']['output']>;
+  slug?: Maybe<Scalars['String']['output']>;
+};
+
+export type CategoryOperationResponse = {
+  __typename?: 'CategoryOperationResponse';
+  data?: Maybe<Array<Category>>;
+  message?: Maybe<Scalars['String']['output']>;
+};
+
 export type CreateListingInput = {
   categoryId: Scalars['Int']['input'];
-  condition: Listing_Condition;
+  condition: ListingCondition;
   description: Scalars['String']['input'];
   imageFilePaths: Array<Scalars['String']['input']>;
   notes: Scalars['String']['input'];
@@ -25,26 +39,26 @@ export type CreateListingInput = {
   title: Scalars['String']['input'];
 };
 
-export type ListingOperationResponse = {
-  __typename?: 'ListingOperationResponse';
-  data?: Maybe<Array<Listings>>;
-  message?: Maybe<Scalars['String']['output']>;
+export type Homepage = {
+  __typename?: 'Homepage';
+  categories?: Maybe<Array<Category>>;
+  listings?: Maybe<Array<Listing>>;
 };
 
-export type ListingPhotos = {
-  __typename?: 'ListingPhotos';
-  id: Scalars['Int']['output'];
-  imageUrl: Scalars['String']['output'];
-  listingId: Scalars['Int']['output'];
-  sortOrder: Scalars['Int']['output'];
+export type HomepageOperationResponse = {
+  __typename?: 'HomepageOperationResponse';
+  data: Homepage;
+  message: Scalars['String']['output'];
 };
 
-export type Listings = {
-  __typename?: 'Listings';
+export type Listing = {
+  __typename?: 'Listing';
   categoryId: Scalars['Int']['output'];
-  condition: Listing_Condition;
+  city?: Maybe<Scalars['String']['output']>;
+  condition: ListingCondition;
   createdAt?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  fileUrl?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   price: Scalars['Float']['output'];
@@ -54,10 +68,23 @@ export type Listings = {
   title: Scalars['String']['output'];
 };
 
+export type ListingOperationResponse = {
+  __typename?: 'ListingOperationResponse';
+  data?: Maybe<Array<Listing>>;
+  message?: Maybe<Scalars['String']['output']>;
+};
+
+export type ListingPhoto = {
+  __typename?: 'ListingPhoto';
+  id: Scalars['Int']['output'];
+  imageUrl: Scalars['String']['output'];
+  listingId: Scalars['Int']['output'];
+  sortOrder: Scalars['Int']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createListing: ListingOperationResponse;
-  createUser: UserOperationResponse;
 };
 
 
@@ -65,38 +92,21 @@ export type MutationCreateListingArgs = {
   data: CreateListingInput;
 };
 
-export type Product = {
-  __typename?: 'Product';
-  name?: Maybe<Scalars['String']['output']>;
-};
-
 export type Query = {
   __typename?: 'Query';
+  allCategoryNames: CategoryOperationResponse;
   getAllListings: ListingOperationResponse;
-  getAllUsers: UserOperationResponse;
-  getUser: UserOperationResponse;
+  listingsWithCategories: HomepageOperationResponse;
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID']['output'];
-};
-
-export type UserOperationResponse = {
-  __typename?: 'UserOperationResponse';
-  data?: Maybe<Array<Maybe<User>>>;
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
-export enum ListingStatus {
-  Available = 'Available',
-  Sold = 'Sold'
-}
-
-export enum Listing_Condition {
+export enum ListingCondition {
   Fair = 'Fair',
   Like = 'Like',
   New = 'New',
   Used = 'Used'
+}
+
+export enum ListingStatus {
+  Available = 'Available',
+  Sold = 'Sold'
 }

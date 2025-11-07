@@ -1,14 +1,14 @@
-import { userQueries } from "./query/user.query";
-import { userMutations } from "./mutation/user.mutation";
-import { listingMutations } from "./mutation/listing.mutation";
+import { listingMutations } from "./mutation/listingMutations";
+import { categoryQueries } from "./query/categories";
+import { homepageQueries } from "./query/homepage";
 
 
 export const resolvers = {
     Query: {
-        ...userQueries.Query,
+        ...homepageQueries.Query,
+        ...categoryQueries.Query
     },
     Mutation: {
-        ...userMutations.Mutation,
         ...listingMutations.Mutation
     }
 };

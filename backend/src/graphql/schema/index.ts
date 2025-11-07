@@ -1,8 +1,12 @@
 import { mergeTypeDefs } from "@graphql-tools/merge"
-import { userSchema } from "./user.typeDefs";
-import { listingSchema } from "./listing.typeDefs";
+import { listingSchema } from "./listings";
+import { homepageSchema } from "./homepage";
+import { coreSchema } from "./coreTypeDefs";
+import { categorySchema } from "./categories";
 
 export const typeDefs = mergeTypeDefs([
-    userSchema,
-    listingSchema
+    listingSchema,
+    categorySchema,
+    homepageSchema,
+    coreSchema
 ]);

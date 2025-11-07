@@ -238,12 +238,11 @@ export const signedUrl = async (
     throw new Error('RateLimitError');
   }
 
-  logger.info(`IMAGE: ${images.length}`);
   if (images.length === 0 || !userId) {
     throw new Error('InvalidCredentialsError');
-  }
-
-  const userExist = await getSellerById(userId);
+  };
+  
+  const userExist = await getSellerById(userId)
 
   if (!userExist) {
     throw new Error('UserNotFound');

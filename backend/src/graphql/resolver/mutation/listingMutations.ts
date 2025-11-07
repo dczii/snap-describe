@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { GraphQLContext } from '../../../lib/context';
 import { uploadProductListing } from '../../../services/listingServices';
-import { Listing_Condition } from '../../../generated/graphql';
+import { ListingCondition } from '../../../generated/graphql';
 //simple flow for now
 export const listingMutations = {
   Mutation: {
@@ -13,7 +13,7 @@ export const listingMutations = {
           description: string;
           price: number;
           qty: number;
-          condition: Listing_Condition;
+          condition: ListingCondition;
           categoryId: number;
           notes: string;
           imageFilePaths: string[];
